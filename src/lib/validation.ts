@@ -46,3 +46,38 @@ export function validateSubmission(input: Record<string, unknown>): { ok: true; 
   }
   return { ok: false, errors };
 }
+
+/**
+ * An event found by the weekly scout. Same rules as the organiser form, but no contact email,
+ * and a source link is required so a moderator can check it.
+ */
+export const scoutedEventSchema = z
+  .object({
+    title: z.string().trim().min(4).max(90),
+    description: z.string().trim().min(20).max(1200),
+    category: z.enum(CATEGORIES),
+    area: z.string().refine((v) => areaSlugs.includes(v), "Unknown area"),
+    venue: z.string().trim().min(2).max(100),
+    postcode: z
+      .string()
+      .trim()
+      .regex(UK_POSTCODE)
+      .transform((v) => v.toUpperCase().replace(/\s+/g, "").replace(/(\w{3})$/, " $1"))
+      .optional(),
+    lat: z.number().min(52.5).max(53.5).optional(),
+    lng: z.number().min(-2.6).max(-1.6).optional(),
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    start: time,
+    end: time,
+    isFree: z.boolean(),
+    priceText: z.string().trim().max(40).optional(),
+    minAge: z.number().int().min(0).max(17),
+    maxAge: z.number().int().min(0).max(17),
+    organiser: z.string().trim().min(2).max(80),
+    sourceUrl: z.url({ protocol: /^https?$/ }),
+    bookingUrl: z.url({ protocol: /^https?$/ }).optional(),
+  })
+  .refine((v) => v.end > v.start, { path: ["end"], message: "End must be after start" })
+  .refine((v) => v.maxAge >= v.minAge, { path: ["maxAge"], message: "maxAge < minAge" });
+
+export type ScoutedEvent = z.infer<typeof scoutedEventSchema>;

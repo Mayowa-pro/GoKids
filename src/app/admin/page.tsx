@@ -43,6 +43,15 @@ function Row({ e, mode }: { e: EventRow; mode: "pending" | "approved" }) {
         <PriceBadge isFree={e.isFree} priceText={e.priceText} />
       </div>
       {mode === "pending" && <p className="max-w-[70ch] text-sm">{e.description}</p>}
+      {e.sourceUrl && (
+        <p className="text-sm">
+          <span className="font-semibold">{e.origin === "scout" ? "Found by the weekly scout." : "Imported."}</span>{" "}
+          <a href={e.sourceUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-cobalt underline">
+            Check the original
+          </a>{" "}
+          before approving.
+        </p>
+      )}
       <div className="flex flex-wrap gap-2">
         {mode === "pending" ? (
           <>

@@ -27,6 +27,10 @@ export const events = sqliteTable(
     status: text("status", { enum: ["pending", "approved", "rejected"] }).notNull().default("pending"),
     featuredUntil: integer("featured_until", { mode: "timestamp" }),
     isSample: integer("is_sample", { mode: "boolean" }).notNull().default(false),
+    /** Where an imported event was found, so a moderator can check it and parents can see the original. */
+    sourceUrl: text("source_url"),
+    /** How it arrived: "form" (organiser), "scout" (weekly web search) or "feed" (calendar import). */
+    origin: text("origin").notNull().default("form"),
     createdAt: integer("created_at", { mode: "timestamp" }).notNull().default(sql`(unixepoch())`),
   },
   (t) => [

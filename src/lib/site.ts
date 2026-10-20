@@ -34,6 +34,7 @@ export const REGIONS: Region[] = [
       { slug: "stoke", name: "Stoke", lat: 53.004, lng: -2.185 },
       { slug: "fenton", name: "Fenton", lat: 52.999, lng: -2.156 },
       { slug: "longton", name: "Longton", lat: 52.988, lng: -2.133 },
+      { slug: "trentham", name: "Trentham", lat: 52.966, lng: -2.199 },
     ],
   },
   { slug: "newcastle-under-lyme", name: "Newcastle-under-Lyme", live: false, center: { lat: 53.011, lng: -2.227 }, zoom: 13, areas: [] },

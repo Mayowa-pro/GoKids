@@ -13,7 +13,8 @@
     "db:migrate": "tsx src/db/migrate.ts",
     "db:seed": "tsx src/db/seed.ts",
     "db:setup": "npm run db:migrate && npm run db:seed",
-    "vercel-build": "npm run db:migrate && tsx src/db/seed-if-empty.ts && next build"
+    "vercel-build": "npm run db:migrate && tsx src/db/seed-if-empty.ts && npm run db:import && next build",
+    "db:import": "tsx src/db/import-scouted.ts"
   },
   "dependencies": {
     "@libsql/client": "^0.18.0",
