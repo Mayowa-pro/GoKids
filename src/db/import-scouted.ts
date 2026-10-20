@@ -15,13 +15,15 @@ import { db } from "./index";
 import { events } from "./schema";
 
 const DIR = path.join(process.cwd(), "data", "scouted");
+/** Events the site owner supplied directly (e.g. pasted from a library timetable). These go live without approval. */
+const CURATED_DIR = path.join(process.cwd(), "data", "curated");
 
 function at(date: string, hhmm: string) {
   const [h, m] = hhmm.split(":").map(Number);
   return new Date(londonMidnight(date).getTime() + (h * 60 + m) * 60_000);
 }
 
-export async function importScouted(dir = DIR) {
+export async function importScouted(dir = DIR, origin: "scout" | "curated" = "scout") {
   const files = (await readdir(dir).catch(() => [])).filter((f) => f.endsWith(".json")).sort();
   let added = 0, skipped = 0, invalid = 0;
   const seen: string[] = [];
@@ -45,12 +47,14 @@ export async function importScouted(dir = DIR) {
       }
       const e = r.data;
       const endsAt = at(e.endDate ?? e.date, e.end);
-      const slug = `${slugify(e.title)}-${e.date}`;
+      const slug = e.repeatsWeekly ? `${slugify(e.title)}-${slugify(e.venue)}-weekly` : `${slugify(e.title)}-${e.date}`;
       seen.push(slug);
-      if (endsAt < new Date()) { skipped++; continue; }
+      const repeatUntil = e.repeatUntil ? at(e.repeatUntil, "23:59") : null;
+      const finished = e.repeatsWeekly ? !!repeatUntil && repeatUntil < new Date() : endsAt < new Date();
+      if (finished) { skipped++; continue; }
 
       const [existing] = await db.select({ id: events.id }).from(events).where(eq(events.slug, slug)).limit(1);
-      if (existing) { skipped++; continue; }
+      if (existing && origin === "scout") { skipped++; continue; }
 
       const region = LIVE_REGIONS.find((rg) => rg.areas.some((a) => a.slug === e.area))!;
       const area = region.areas.find((a) => a.slug === e.area)!;
@@ -58,7 +62,7 @@ export async function importScouted(dir = DIR) {
         e.lat !== undefined && e.lng !== undefined ? { lat: e.lat, lng: e.lng }
         : (e.postcode && (await geocodePostcode(e.postcode))) || { lat: area.lat, lng: area.lng };
 
-      await db.insert(events).values({
+      const values = {
         slug,
         title: e.title,
         description: e.description,
@@ -72,6 +76,8 @@ export async function importScouted(dir = DIR) {
         startsAt: at(e.date, e.start),
         endsAt,
         timesNote: e.timesNote ?? null,
+        repeatsWeekly: e.repeatsWeekly ?? false,
+        repeatUntil,
         isFree: e.isFree,
         priceText: e.isFree ? null : (e.priceText ?? "See website"),
         minAge: e.minAge,
@@ -79,9 +85,16 @@ export async function importScouted(dir = DIR) {
         organiser: e.organiser,
         bookingUrl: e.bookingUrl ?? e.sourceUrl,
         sourceUrl: e.sourceUrl,
-        origin: "scout",
-        status: "pending",
-      });
+        origin,
+        status: origin === "curated" ? ("approved" as const) : ("pending" as const),
+      };
+      if (existing) {
+        // Curated files are the source of truth, so keep the live listing in step with them.
+        await db.update(events).set(values).where(eq(events.id, existing.id));
+        skipped++;
+        continue;
+      }
+      await db.insert(events).values(values);
       added++;
     }
   }
@@ -89,16 +102,18 @@ export async function importScouted(dir = DIR) {
   // (for example after a batch was corrected). Approved or rejected events are never touched.
   const stale = await db
     .delete(events)
-    .where(and(eq(events.origin, "scout"), eq(events.status, "pending"), seen.length ? not(inArray(events.slug, seen)) : undefined))
+    .where(and(eq(events.origin, origin), eq(events.status, origin === "curated" ? "approved" : "pending"), seen.length ? not(inArray(events.slug, seen)) : undefined))
     .returning({ id: events.id });
-  if (stale.length) console.log(`Removed ${stale.length} outdated scouted events from the approval queue.`);
+  if (stale.length) console.log(`Removed ${stale.length} outdated ${origin} events.`);
 
-  console.log(`Scouted events: ${added} added for approval, ${skipped} already in or finished, ${invalid} invalid.`);
+  console.log(`${origin === "curated" ? "Curated" : "Scouted"} events: ${added} added${origin === "scout" ? " for approval" : ""}, ${skipped} already in or finished, ${invalid} invalid.`);
   return { added, skipped, invalid };
 }
 
 if (process.argv[1]?.endsWith("import-scouted.ts")) {
-  importScouted().catch((e) => {
+  importScouted()
+    .then(() => importScouted(CURATED_DIR, "curated"))
+    .catch((e) => {
     console.error(e);
     process.exit(1);
   });

@@ -4,6 +4,7 @@ import { PriceBadge } from "@/components/PriceBadge";
 import { listByStatus } from "@/db/queries";
 import type { EventRow } from "@/db/schema";
 import { adminEnabled, isAdmin } from "@/lib/auth";
+import { repeatLabel } from "@/lib/recurrence";
 import { formatLongDate, formatTime, isMultiDay } from "@/lib/time";
 import { LoginForm } from "./LoginForm";
 import { deleteSamples, logout, moderate } from "./actions";
@@ -33,6 +34,7 @@ function Row({ e, mode }: { e: EventRow; mode: "pending" | "approved" }) {
         <div className="min-w-0">
           <h3 className="font-bold">{e.title}</h3>
           <p className="text-sm text-muted">
+            {e.repeatsWeekly ? `${repeatLabel(e)}, from ` : ""}
             {formatLongDate(e.startsAt)}
             {isMultiDay(e) ? ` to ${formatLongDate(e.endsAt)}` : ""}, {e.timesNote ?? `${formatTime(e.startsAt)}–${formatTime(e.endsAt)}`} · {e.venue} ({e.postcode}) · ages {e.minAge}–{e.maxAge}
           </p>
@@ -81,7 +83,7 @@ async function Dashboard() {
   if (!(await isAdmin())) return <LoginForm />;
   const [pending, approved] = await Promise.all([listByStatus("pending"), listByStatus("approved")]);
   const now = new Date();
-  const upcoming = approved.filter((e) => e.endsAt > now);
+  const upcoming = approved.filter((e) => e.endsAt > now || e.repeatsWeekly);
   const sampleCount = approved.filter((e) => e.isSample).length;
   return (
     <div className="flex flex-col gap-10">

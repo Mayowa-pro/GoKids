@@ -19,6 +19,12 @@ export const events = sqliteTable(
     endsAt: integer("ends_at", { mode: "timestamp" }).notNull(),
     /** Optional wording for events with several sessions, e.g. "Shows at 1pm and 5pm". */
     timesNote: text("times_note"),
+    /**
+     * Weekly sessions (like a library rhyme time) are stored once. startsAt/endsAt hold the first
+     * session; the site works out the next one when it shows the event. repeatUntil is optional.
+     */
+    repeatsWeekly: integer("repeats_weekly", { mode: "boolean" }).notNull().default(false),
+    repeatUntil: integer("repeat_until", { mode: "timestamp" }),
     isFree: integer("is_free", { mode: "boolean" }).notNull(),
     priceText: text("price_text"),
     minAge: integer("min_age").notNull().default(0),

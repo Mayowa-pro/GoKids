@@ -35,6 +35,8 @@ export const REGIONS: Region[] = [
       { slug: "fenton", name: "Fenton", lat: 52.999, lng: -2.156 },
       { slug: "longton", name: "Longton", lat: 52.988, lng: -2.133 },
       { slug: "trentham", name: "Trentham", lat: 52.966, lng: -2.199 },
+      { slug: "bentilee", name: "Bentilee", lat: 53.0205, lng: -2.1265 },
+      { slug: "meir", name: "Meir", lat: 52.976, lng: -2.104 },
     ],
   },
   { slug: "newcastle-under-lyme", name: "Newcastle-under-Lyme", live: false, center: { lat: 53.011, lng: -2.227 }, zoom: 13, areas: [] },
@@ -51,6 +53,7 @@ export function getRegion(slug: string): Region | undefined {
 }
 
 export const CATEGORIES = [
+  "Baby & toddler",
   "Play",
   "Stories",
   "Arts & crafts",

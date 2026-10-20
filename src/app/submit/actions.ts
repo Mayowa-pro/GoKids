@@ -56,6 +56,7 @@ export async function submitEvent(_prev: SubmitState, form: FormData): Promise<S
       organiser: s.organiser,
       contactEmail: s.contactEmail,
       bookingUrl: s.bookingUrl || null,
+      repeatsWeekly: s.repeatsWeekly,
       status: "pending",
     });
   } catch (err) {

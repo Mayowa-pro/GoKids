@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { PriceBadge } from "@/components/PriceBadge";
 import { getEventBySlug } from "@/db/queries";
 import { SITE, getRegion } from "@/lib/site";
+import { repeatLabel } from "@/lib/recurrence";
 import { formatLongDate, formatTime, isMultiDay } from "@/lib/time";
 
 export async function generateMetadata({ params }: PageProps<"/events/[slug]">): Promise<Metadata> {
@@ -71,6 +72,11 @@ async function EventDetail({ params }: { params: PageProps<"/events/[slug]">["pa
       <dl className="mt-6 grid grid-cols-[auto_minmax(0,1fr)] gap-x-5 gap-y-3 rounded-2xl border border-line bg-surface p-5">
         <dt className="label pt-0.5">When</dt>
         <dd>
+          {e.repeatsWeekly && (
+            <>
+              <strong>{repeatLabel(e)}</strong>. Next session:{" "}
+            </>
+          )}
           {isMultiDay(e) ? `${formatLongDate(e.startsAt)} to ${formatLongDate(e.endsAt)}` : formatLongDate(e.startsAt)}
           <br />
           <span className="tabular-nums">

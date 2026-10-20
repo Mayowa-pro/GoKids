@@ -29,6 +29,7 @@ Each file is a list of events in this shape:
 **One listing per event, not per session:**
 - An event that runs every day over a date range (like a half-term trail) is one entry with `"endDate"` set to the last day.
 - Several sessions on the same day go in one entry: `start` is the first session, `end` the last, and `"timesNote"` says it plainly, for example `"Two sessions: 5:30–7pm and 7:30–9pm"`.
+- A session that runs every week on the same day and time is one entry with `"repeatsWeekly": true` and `date` set to any one session (optional `"repeatUntil"` for the last date). The site shows the next session automatically.
 - Only repeat an event when it happens on separate, non-consecutive days.
 
 Allowed `category` values and `area` slugs are in `src/lib/site.ts`. Paid events add `"priceText": "£5 per child"`.

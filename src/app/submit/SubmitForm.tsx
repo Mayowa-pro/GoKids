@@ -103,6 +103,14 @@ function Form({ areas, onReset }: { areas: Area[]; onReset: () => void }) {
         </Field>
       </div>
 
+      <label className="flex items-center gap-2.5">
+        <input id="repeatsWeekly" type="checkbox" name="repeatsWeekly" value="yes" defaultChecked={v.repeatsWeekly === "yes"} className="size-4" />
+        <span>
+          <span className="font-semibold">Repeats every week</span>
+          <span className="block text-xs text-muted">Same day and time each week, like a weekly class. You only need to add it once.</span>
+        </span>
+      </label>
+
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1.5 text-sm font-semibold">Price</legend>
         <div className="flex flex-wrap gap-4">

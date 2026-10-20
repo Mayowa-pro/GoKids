@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { PublicEvent } from "@/db/queries";
+import { repeatLabel } from "@/lib/recurrence";
 import { formatShortDate, formatTime, isMultiDay } from "@/lib/time";
 import { PriceBadge } from "./PriceBadge";
 
@@ -28,7 +29,7 @@ export function EventCard({ event: e, areaName, distance, highlighted, onHover }
       <div className="font-bold leading-tight tabular-nums">
         {isMultiDay(e) ? "Daily" : formatTime(e.startsAt)}
         <span className="block text-xs font-medium text-muted">
-          {isMultiDay(e) ? `until ${formatShortDate(e.endsAt)}` : `to ${formatTime(e.endsAt)}`}
+          {isMultiDay(e) ? `until ${formatShortDate(e.endsAt)}` : e.timesNote ? "" : `to ${formatTime(e.endsAt)}`}
         </span>
       </div>
       <div className="min-w-0">
@@ -42,6 +43,9 @@ export function EventCard({ event: e, areaName, distance, highlighted, onHover }
         </div>
         {e.timesNote && <p className="mt-0.5 text-[13.5px] font-medium">{e.timesNote}</p>}
         <div className="mt-2 flex flex-wrap gap-1.5 text-xs font-semibold">
+          {e.repeatsWeekly && (
+            <span className="rounded-md border border-cobalt bg-cobalt-soft px-2 py-0.5 text-cobalt">{repeatLabel(e)}</span>
+          )}
           {e.isSample && <span className="rounded-md border border-dashed border-paid px-2 py-0.5 text-paid">Sample</span>}
           <span className="rounded-md border border-line bg-bg px-2 py-0.5">{e.category}</span>
           <span className="rounded-md border border-line bg-bg px-2 py-0.5">

@@ -27,6 +27,7 @@ export const submissionSchema = z
     organiser: z.string().trim().min(2, "Who runs it?").max(80),
     contactEmail: z.email("Enter an email we can reach you on"),
     bookingUrl: z.union([z.literal(""), z.url({ protocol: /^https?$/, message: "Links must start with https://" })]).optional().default(""),
+    repeatsWeekly: z.literal("yes").optional().transform((v) => v === "yes"),
   })
   .refine((v) => v.end > v.start, { path: ["end"], message: "The end time must be after the start" })
   .refine((v) => v.maxAge >= v.minAge, { path: ["maxAge"], message: "The oldest age must be at least the youngest" })
@@ -73,6 +74,9 @@ export const scoutedEventSchema = z
     end: time,
     /** Plain wording when there are several sessions, e.g. "Two shows: 1–3pm and 5–7pm". */
     timesNote: z.string().trim().max(120).optional(),
+    /** Runs every week on the same day and time, starting on `date`. */
+    repeatsWeekly: z.boolean().optional(),
+    repeatUntil: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
     isFree: z.boolean(),
     priceText: z.string().trim().max(40).optional(),
     minAge: z.number().int().min(0).max(17),
@@ -82,6 +86,7 @@ export const scoutedEventSchema = z
     bookingUrl: z.url({ protocol: /^https?$/ }).optional(),
   })
   .refine((v) => v.end > v.start, { path: ["end"], message: "End must be after start" })
+  .refine((v) => !(v.repeatsWeekly && v.endDate), { path: ["endDate"], message: "Weekly events use repeatUntil, not endDate" })
   .refine((v) => !v.endDate || v.endDate > v.date, { path: ["endDate"], message: "endDate must be after date" })
   .refine((v) => v.maxAge >= v.minAge, { path: ["maxAge"], message: "maxAge < minAge" });
 
