@@ -51,7 +51,7 @@ Other scripts: `npm test`, `npm run lint`, `npm run typecheck`, `npm run db:gene
 1. Create a Turso database and copy its URL and auth token.
 2. Import this repo into [Vercel](https://vercel.com/new).
 3. Set `DATABASE_URL`, `DATABASE_AUTH_TOKEN`, `ADMIN_PASSWORD` and `NEXT_PUBLIC_SITE_URL` in the Vercel project settings.
-4. Run migrations once against Turso: `DATABASE_URL=… DATABASE_AUTH_TOKEN=… npm run db:migrate` (and `db:seed` if you want sample data).
+4. Deploy. Vercel runs the `vercel-build` script, which updates the database tables and adds sample events the first time (only if the database is empty), then builds the site.
 
 ## Project structure
 
