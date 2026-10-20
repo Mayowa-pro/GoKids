@@ -59,10 +59,15 @@ function Row({ e, mode }: { e: EventRow; mode: "pending" | "approved" }) {
             <Btn id={e.id} op="approve" tone="primary">Approve</Btn>
             <Btn id={e.id} op="reject" tone="danger">Reject</Btn>
           </>
-        ) : featured ? (
-          <Btn id={e.id} op="unfeature">Remove feature (until {formatLongDate(e.featuredUntil!)})</Btn>
         ) : (
-          <Btn id={e.id} op="feature" tone="primary">Feature for 7 days</Btn>
+          <>
+            {featured ? (
+              <Btn id={e.id} op="unfeature">Remove feature (until {formatLongDate(e.featuredUntil!)})</Btn>
+            ) : (
+              <Btn id={e.id} op="feature" tone="primary">Feature for 7 days</Btn>
+            )}
+            <Btn id={e.id} op="reject" tone="danger">Take down</Btn>
+          </>
         )}
       </div>
     </li>
