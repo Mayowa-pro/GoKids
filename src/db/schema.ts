@@ -1,0 +1,38 @@
+import { sql } from "drizzle-orm";
+import { index, integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
+
+export const events = sqliteTable(
+  "events",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    slug: text("slug").notNull().unique(),
+    title: text("title").notNull(),
+    description: text("description").notNull(),
+    category: text("category").notNull(),
+    region: text("region").notNull(),
+    area: text("area").notNull(),
+    venue: text("venue").notNull(),
+    postcode: text("postcode"),
+    lat: real("lat").notNull(),
+    lng: real("lng").notNull(),
+    startsAt: integer("starts_at", { mode: "timestamp" }).notNull(),
+    endsAt: integer("ends_at", { mode: "timestamp" }).notNull(),
+    isFree: integer("is_free", { mode: "boolean" }).notNull(),
+    priceText: text("price_text"),
+    minAge: integer("min_age").notNull().default(0),
+    maxAge: integer("max_age").notNull().default(16),
+    organiser: text("organiser").notNull(),
+    contactEmail: text("contact_email"),
+    bookingUrl: text("booking_url"),
+    status: text("status", { enum: ["pending", "approved", "rejected"] }).notNull().default("pending"),
+    featuredUntil: integer("featured_until", { mode: "timestamp" }),
+    isSample: integer("is_sample", { mode: "boolean" }).notNull().default(false),
+    createdAt: integer("created_at", { mode: "timestamp" }).notNull().default(sql`(unixepoch())`),
+  },
+  (t) => [
+    index("events_region_start_idx").on(t.region, t.status, t.startsAt),
+  ],
+);
+
+export type EventRow = typeof events.$inferSelect;
+export type NewEvent = typeof events.$inferInsert;
