@@ -4,7 +4,7 @@ import { PriceBadge } from "@/components/PriceBadge";
 import { listByStatus } from "@/db/queries";
 import type { EventRow } from "@/db/schema";
 import { adminEnabled, isAdmin } from "@/lib/auth";
-import { formatLongDate, formatTime } from "@/lib/time";
+import { formatLongDate, formatTime, isMultiDay } from "@/lib/time";
 import { LoginForm } from "./LoginForm";
 import { deleteSamples, logout, moderate } from "./actions";
 
@@ -33,7 +33,8 @@ function Row({ e, mode }: { e: EventRow; mode: "pending" | "approved" }) {
         <div className="min-w-0">
           <h3 className="font-bold">{e.title}</h3>
           <p className="text-sm text-muted">
-            {formatLongDate(e.startsAt)}, {formatTime(e.startsAt)}–{formatTime(e.endsAt)} · {e.venue} ({e.postcode}) · ages {e.minAge}–{e.maxAge}
+            {formatLongDate(e.startsAt)}
+            {isMultiDay(e) ? ` to ${formatLongDate(e.endsAt)}` : ""}, {e.timesNote ?? `${formatTime(e.startsAt)}–${formatTime(e.endsAt)}`} · {e.venue} ({e.postcode}) · ages {e.minAge}–{e.maxAge}
           </p>
           <p className="text-sm text-muted">
             {e.organiser}

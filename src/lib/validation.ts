@@ -67,8 +67,12 @@ export const scoutedEventSchema = z
     lat: z.number().min(52.5).max(53.5).optional(),
     lng: z.number().min(-2.6).max(-1.6).optional(),
     date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    /** Last day, for events that run every day over a date range. */
+    endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
     start: time,
     end: time,
+    /** Plain wording when there are several sessions, e.g. "Two shows: 1–3pm and 5–7pm". */
+    timesNote: z.string().trim().max(120).optional(),
     isFree: z.boolean(),
     priceText: z.string().trim().max(40).optional(),
     minAge: z.number().int().min(0).max(17),
@@ -78,6 +82,7 @@ export const scoutedEventSchema = z
     bookingUrl: z.url({ protocol: /^https?$/ }).optional(),
   })
   .refine((v) => v.end > v.start, { path: ["end"], message: "End must be after start" })
+  .refine((v) => !v.endDate || v.endDate > v.date, { path: ["endDate"], message: "endDate must be after date" })
   .refine((v) => v.maxAge >= v.minAge, { path: ["maxAge"], message: "maxAge < minAge" });
 
 export type ScoutedEvent = z.infer<typeof scoutedEventSchema>;

@@ -5,7 +5,7 @@
  */
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
-import { eq } from "drizzle-orm";
+import { and, eq, inArray, not } from "drizzle-orm";
 import { geocodePostcode } from "../lib/postcode";
 import { LIVE_REGIONS } from "../lib/site";
 import { slugify } from "../lib/slug";
@@ -24,6 +24,7 @@ function at(date: string, hhmm: string) {
 export async function importScouted(dir = DIR) {
   const files = (await readdir(dir).catch(() => [])).filter((f) => f.endsWith(".json")).sort();
   let added = 0, skipped = 0, invalid = 0;
+  const seen: string[] = [];
 
   for (const file of files) {
     let raw;
@@ -43,10 +44,11 @@ export async function importScouted(dir = DIR) {
         continue;
       }
       const e = r.data;
-      const endsAt = at(e.date, e.end);
+      const endsAt = at(e.endDate ?? e.date, e.end);
+      const slug = `${slugify(e.title)}-${e.date}`;
+      seen.push(slug);
       if (endsAt < new Date()) { skipped++; continue; }
 
-      const slug = `${slugify(e.title)}-${e.date}-${e.start.replace(":", "")}`;
       const [existing] = await db.select({ id: events.id }).from(events).where(eq(events.slug, slug)).limit(1);
       if (existing) { skipped++; continue; }
 
@@ -69,6 +71,7 @@ export async function importScouted(dir = DIR) {
         lng: point.lng,
         startsAt: at(e.date, e.start),
         endsAt,
+        timesNote: e.timesNote ?? null,
         isFree: e.isFree,
         priceText: e.isFree ? null : (e.priceText ?? "See website"),
         minAge: e.minAge,
@@ -82,6 +85,14 @@ export async function importScouted(dir = DIR) {
       added++;
     }
   }
+  // Tidy the queue: drop scouted events still waiting for approval that no file lists any more
+  // (for example after a batch was corrected). Approved or rejected events are never touched.
+  const stale = await db
+    .delete(events)
+    .where(and(eq(events.origin, "scout"), eq(events.status, "pending"), seen.length ? not(inArray(events.slug, seen)) : undefined))
+    .returning({ id: events.id });
+  if (stale.length) console.log(`Removed ${stale.length} outdated scouted events from the approval queue.`);
+
   console.log(`Scouted events: ${added} added for approval, ${skipped} already in or finished, ${invalid} invalid.`);
   return { added, skipped, invalid };
 }

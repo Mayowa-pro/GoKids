@@ -1,0 +1,1 @@
+ALTER TABLE `events` ADD `times_note` text;

@@ -52,3 +52,12 @@ export function formatDayHeading(dateKey: string, todayKey: string): { label: st
 export function formatLongDate(at: Date): string {
   return new Intl.DateTimeFormat("en-GB", { timeZone: TZ, weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(at);
 }
+
+export function formatShortDate(at: Date): string {
+  return new Intl.DateTimeFormat("en-GB", { timeZone: TZ, day: "numeric", month: "short" }).format(at);
+}
+
+/** True for events that run over several days, like a half-term trail. */
+export function isMultiDay(e: { startsAt: Date; endsAt: Date }): boolean {
+  return londonDateKey(e.startsAt) !== londonDateKey(e.endsAt);
+}

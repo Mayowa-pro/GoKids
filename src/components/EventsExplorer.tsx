@@ -39,7 +39,9 @@ export function EventsExplorer({ events, areas, near, center, zoom, todayKey }: 
   const days = useMemo(() => {
     const groups = new Map<string, PublicEvent[]>();
     for (const e of events) {
-      const k = londonDateKey(e.startsAt);
+      // Events that started earlier (like a week-long trail) show under today.
+      const startKey = londonDateKey(e.startsAt);
+      const k = startKey < todayKey ? todayKey : startKey;
       if (!groups.has(k)) groups.set(k, []);
       groups.get(k)!.push(e);
     }
@@ -52,7 +54,7 @@ export function EventsExplorer({ events, areas, near, center, zoom, todayKey }: 
       );
     }
     return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b));
-  }, [events, origin]);
+  }, [events, origin, todayKey]);
 
   function locate() {
     setLocError(null);

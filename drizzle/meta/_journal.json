@@ -15,6 +15,13 @@
       "when": 1792505331059,
       "tag": "0001_event_source",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1792506115184,
+      "tag": "0002_times_note",
+      "breakpoints": true
     }
   ]
 }

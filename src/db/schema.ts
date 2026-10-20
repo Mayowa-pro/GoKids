@@ -17,6 +17,8 @@ export const events = sqliteTable(
     lng: real("lng").notNull(),
     startsAt: integer("starts_at", { mode: "timestamp" }).notNull(),
     endsAt: integer("ends_at", { mode: "timestamp" }).notNull(),
+    /** Optional wording for events with several sessions, e.g. "Shows at 1pm and 5pm". */
+    timesNote: text("times_note"),
     isFree: integer("is_free", { mode: "boolean" }).notNull(),
     priceText: text("price_text"),
     minAge: integer("min_age").notNull().default(0),

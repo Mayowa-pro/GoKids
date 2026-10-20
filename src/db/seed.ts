@@ -54,7 +54,7 @@ export function buildSamples(now = new Date()): NewEvent[] {
   const out: NewEvent[] = [];
   const featuredUntil = new Date(now.getTime() + 14 * 86_400_000);
   for (const s of SAMPLES) {
-    for (const offset of s.weekly ? [s.d, s.d + 7] : [s.d]) {
+    for (const offset of [s.d]) {
       const day = addDays(today, offset);
       out.push({
         slug: `${slugify(s.t)}-${day}`,

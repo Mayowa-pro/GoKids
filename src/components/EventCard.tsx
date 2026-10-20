@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { PublicEvent } from "@/db/queries";
-import { formatTime } from "@/lib/time";
+import { formatShortDate, formatTime, isMultiDay } from "@/lib/time";
 import { PriceBadge } from "./PriceBadge";
 
 type Props = {
@@ -26,8 +26,10 @@ export function EventCard({ event: e, areaName, distance, highlighted, onHover }
       ].join(" ")}
     >
       <div className="font-bold leading-tight tabular-nums">
-        {formatTime(e.startsAt)}
-        <span className="block text-xs font-medium text-muted">to {formatTime(e.endsAt)}</span>
+        {isMultiDay(e) ? "Daily" : formatTime(e.startsAt)}
+        <span className="block text-xs font-medium text-muted">
+          {isMultiDay(e) ? `until ${formatShortDate(e.endsAt)}` : `to ${formatTime(e.endsAt)}`}
+        </span>
       </div>
       <div className="min-w-0">
         {e.featured && <div className="label !text-cobalt mb-1 !text-[11px]">★ Featured</div>}
@@ -38,6 +40,7 @@ export function EventCard({ event: e, areaName, distance, highlighted, onHover }
           </span>
           {distance && <span>{distance}</span>}
         </div>
+        {e.timesNote && <p className="mt-0.5 text-[13.5px] font-medium">{e.timesNote}</p>}
         <div className="mt-2 flex flex-wrap gap-1.5 text-xs font-semibold">
           {e.isSample && <span className="rounded-md border border-dashed border-paid px-2 py-0.5 text-paid">Sample</span>}
           <span className="rounded-md border border-line bg-bg px-2 py-0.5">{e.category}</span>
