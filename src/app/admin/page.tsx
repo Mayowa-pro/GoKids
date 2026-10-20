@@ -6,7 +6,7 @@ import type { EventRow } from "@/db/schema";
 import { adminEnabled, isAdmin } from "@/lib/auth";
 import { formatLongDate, formatTime } from "@/lib/time";
 import { LoginForm } from "./LoginForm";
-import { logout, moderate } from "./actions";
+import { deleteSamples, logout, moderate } from "./actions";
 
 export const metadata: Metadata = { title: "Moderation", robots: { index: false } };
 
@@ -67,9 +67,26 @@ async function Dashboard() {
   const [pending, approved] = await Promise.all([listByStatus("pending"), listByStatus("approved")]);
   const now = new Date();
   const upcoming = approved.filter((e) => e.endsAt > now);
+  const sampleCount = approved.filter((e) => e.isSample).length;
   return (
     <div className="flex flex-col gap-10">
       <form action={logout}><button className="text-sm font-semibold text-cobalt hover:underline">Sign out</button></form>
+      {sampleCount > 0 && (
+        <section className="rounded-2xl border-2 border-dashed border-paid bg-paid-soft p-4">
+          <h2 className="font-display text-lg font-semibold">Sample events ({sampleCount})</h2>
+          <p className="mt-1 text-sm">
+            These made-up examples are on the site so it doesn&apos;t look empty. Remove them once you have real events. This can&apos;t be undone.
+          </p>
+          <form action={deleteSamples} className="mt-3 flex flex-wrap items-center gap-3">
+            <label className="flex items-center gap-2 text-sm">
+              <input type="checkbox" name="confirm" value="yes" required /> Yes, I have real events now
+            </label>
+            <button className="rounded-full border border-danger bg-surface px-4 py-2 text-sm font-semibold text-danger">
+              Remove all sample events
+            </button>
+          </form>
+        </section>
+      )}
       <section>
         <h2 className="mb-3 font-display text-xl font-semibold">Waiting for approval ({pending.length})</h2>
         {pending.length ? <ul className="flex flex-col gap-3">{pending.map((e) => <Row key={e.id} e={e} mode="pending" />)}</ul> : <p className="text-muted">Nothing to check. New submissions will appear here.</p>}

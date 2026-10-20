@@ -38,3 +38,10 @@ export async function moderate(form: FormData) {
   await db.update(events).set(patch).where(eq(events.id, id));
   refresh();
 }
+
+export async function deleteSamples(form: FormData) {
+  await requireAdmin();
+  if (form.get("confirm") !== "yes") return;
+  await db.delete(events).where(eq(events.isSample, true));
+  refresh();
+}

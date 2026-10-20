@@ -56,6 +56,11 @@ async function EventDetail({ params }: { params: PageProps<"/events/[slug]">["pa
       <Link href={`/${e.region}`} className="text-sm font-semibold text-cobalt hover:underline">
         ← All events in {region?.name ?? e.region}
       </Link>
+      {e.isSample && (
+        <p role="note" className="mt-5 rounded-xl border-2 border-dashed border-paid bg-paid-soft px-4 py-3 text-sm">
+          <strong>Sample event:</strong> this is an example to show how the site works. It isn&apos;t really happening.
+        </p>
+      )}
       <div className="mt-5">
         {e.featured ? <div className="label !text-cobalt">★ Featured listing</div> : <div className="label">{e.category}</div>}
         <h1 className="mt-1.5 font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">{e.title}</h1>
@@ -95,9 +100,6 @@ async function EventDetail({ params }: { params: PageProps<"/events/[slug]">["pa
           Directions
         </a>
       </div>
-      {e.isSample && (
-        <p className="mt-8 text-xs text-muted">Sample listing: the venue is real, the event details are illustrative.</p>
-      )}
     </article>
   );
 }

@@ -39,6 +39,7 @@ export function EventCard({ event: e, areaName, distance, highlighted, onHover }
           {distance && <span>{distance}</span>}
         </div>
         <div className="mt-2 flex flex-wrap gap-1.5 text-xs font-semibold">
+          {e.isSample && <span className="rounded-md border border-dashed border-paid px-2 py-0.5 text-paid">Sample</span>}
           <span className="rounded-md border border-line bg-bg px-2 py-0.5">{e.category}</span>
           <span className="rounded-md border border-line bg-bg px-2 py-0.5">
             Ages {e.minAge}–{e.maxAge}

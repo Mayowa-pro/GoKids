@@ -65,9 +65,16 @@ export function EventsExplorer({ events, areas, near, center, zoom, todayKey }: 
   }
 
   const freeCount = events.filter((e) => e.isFree).length;
+  const hasSamples = events.some((e) => e.isSample);
 
   return (
     <>
+      {hasSamples && (
+        <p role="note" className="mb-4 rounded-xl border-2 border-dashed border-paid bg-paid-soft px-4 py-3 text-sm text-ink">
+          <strong>Preview:</strong> events marked &ldquo;Sample&rdquo; are examples to show how the site works. They are not real, so please
+          don&apos;t plan a day out around them.
+        </p>
+      )}
       <div className="mb-3 flex flex-wrap items-center gap-3 text-sm">
         <span className="font-semibold">
           {events.length} event{events.length === 1 ? "" : "s"} · {freeCount} free
