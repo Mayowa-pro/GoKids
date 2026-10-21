@@ -57,6 +57,11 @@ export function formatShortDate(at: Date): string {
   return new Intl.DateTimeFormat("en-GB", { timeZone: TZ, day: "numeric", month: "short" }).format(at);
 }
 
+/** "Mon 26 Oct". */
+export function formatDayShort(at: Date): string {
+  return new Intl.DateTimeFormat("en-GB", { timeZone: TZ, weekday: "short", day: "numeric", month: "short" }).format(at);
+}
+
 /** True for events that run over several days, like a half-term trail. */
 export function isMultiDay(e: { startsAt: Date; endsAt: Date }): boolean {
   return londonDateKey(e.startsAt) !== londonDateKey(e.endsAt);

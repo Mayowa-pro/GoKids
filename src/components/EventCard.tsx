@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { PublicEvent } from "@/db/queries";
 import { repeatLabel } from "@/lib/recurrence";
-import { formatShortDate, formatTime, isMultiDay } from "@/lib/time";
+import { formatDayShort, formatShortDate, formatTime, isMultiDay } from "@/lib/time";
 import { PriceBadge } from "./PriceBadge";
 
 type Props = {
@@ -42,6 +42,9 @@ export function EventCard({ event: e, areaName, distance, highlighted, onHover }
           {distance && <span>{distance}</span>}
         </div>
         {e.timesNote && <p className="mt-0.5 text-[13.5px] font-medium">{e.timesNote}</p>}
+        {e.alsoOn?.length ? (
+          <p className="mt-0.5 text-[13.5px] font-medium">Also on {e.alsoOn.map(formatDayShort).join(", ")}</p>
+        ) : null}
         <div className="mt-2 flex flex-wrap gap-1.5 text-xs font-semibold">
           {e.repeatsWeekly && (
             <span className="rounded-md border border-cobalt bg-cobalt-soft px-2 py-0.5 text-cobalt">{repeatLabel(e)}</span>

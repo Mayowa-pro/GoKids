@@ -9,14 +9,18 @@ import { and, eq, inArray, not } from "drizzle-orm";
 import { geocodePostcode } from "../lib/postcode";
 import { LIVE_REGIONS } from "../lib/site";
 import { slugify } from "../lib/slug";
-import { londonMidnight } from "../lib/time";
+import { covers } from "../lib/dedupe";
+import { londonMidnight, weekday } from "../lib/time";
 import { scoutedEventSchema } from "../lib/validation";
 import { db } from "./index";
+import { removeDuplicates } from "./dedupe";
 import { events } from "./schema";
 
 const DIR = path.join(process.cwd(), "data", "scouted");
 /** Events the site owner supplied directly (e.g. pasted from a library timetable). These go live without approval. */
 const CURATED_DIR = path.join(process.cwd(), "data", "curated");
+
+const DAYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
 function at(date: string, hhmm: string) {
   const [h, m] = hhmm.split(":").map(Number);
@@ -27,6 +31,13 @@ export async function importScouted(dir = DIR, origin: "scout" | "curated" = "sc
   const files = (await readdir(dir).catch(() => [])).filter((f) => f.endsWith(".json")).sort();
   let added = 0, skipped = 0, invalid = 0;
   const seen: string[] = [];
+  const known =
+    origin === "scout"
+      ? await db
+          .select({ id: events.id, title: events.title, venue: events.venue, startsAt: events.startsAt, endsAt: events.endsAt, repeatsWeekly: events.repeatsWeekly })
+          .from(events)
+          .where(eq(events.isSample, false))
+      : [];
 
   for (const file of files) {
     let raw;
@@ -47,7 +58,10 @@ export async function importScouted(dir = DIR, origin: "scout" | "curated" = "sc
       }
       const e = r.data;
       const endsAt = at(e.endDate ?? e.date, e.end);
-      const slug = e.repeatsWeekly ? `${slugify(e.title)}-${slugify(e.venue)}-weekly` : `${slugify(e.title)}-${e.date}`;
+      // Venue and day are part of the address, so the same session at two places or on two weekdays stays separate.
+      const slug = e.repeatsWeekly
+        ? `${slugify(e.title)}-${slugify(e.venue)}-${DAYS[weekday(e.date)]}-weekly`
+        : `${slugify(e.title)}-${slugify(e.venue)}-${e.date}`;
       seen.push(slug);
       const repeatUntil = e.repeatUntil ? at(e.repeatUntil, "23:59") : null;
       const finished = e.repeatsWeekly ? !!repeatUntil && repeatUntil < new Date() : endsAt < new Date();
@@ -55,6 +69,11 @@ export async function importScouted(dir = DIR, origin: "scout" | "curated" = "sc
 
       const [existing] = await db.select({ id: events.id }).from(events).where(eq(events.slug, slug)).limit(1);
       if (existing && origin === "scout") { skipped++; continue; }
+      if (origin === "scout") {
+        // Skip anything already listed (or already turned down), even under a different address.
+        const candidate = { id: -1, title: e.title, venue: e.venue, startsAt: at(e.date, e.start), endsAt, repeatsWeekly: !!e.repeatsWeekly };
+        if (known.some((k) => covers(k, candidate) || covers(candidate, k))) { skipped++; continue; }
+      }
 
       const region = LIVE_REGIONS.find((rg) => rg.areas.some((a) => a.slug === e.area))!;
       const area = region.areas.find((a) => a.slug === e.area)!;
@@ -111,8 +130,10 @@ export async function importScouted(dir = DIR, origin: "scout" | "curated" = "sc
 }
 
 if (process.argv[1]?.endsWith("import-scouted.ts")) {
-  importScouted()
-    .then(() => importScouted(CURATED_DIR, "curated"))
+  // Owner-supplied events first, so the scout can see them and skip copies.
+  importScouted(CURATED_DIR, "curated")
+    .then(() => importScouted())
+    .then(() => removeDuplicates())
     .catch((e) => {
     console.error(e);
     process.exit(1);
