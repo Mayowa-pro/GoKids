@@ -35,7 +35,7 @@ async function TodayCard() {
   const picks = variety(list, 3);
   const todayKey = londonDateKey(now);
   const pickTime = (e: PublicEvent) =>
-    isMultiDay(e) ? "Daily" : londonDateKey(e.startsAt) === todayKey ? formatTime(e.startsAt) : `${formatDayShort(e.startsAt).replace(/ \w+$/, "")}, ${formatTime(e.startsAt)}`;
+    isMultiDay(e) ? "Daily" : londonDateKey(e.startsAt) === todayKey ? formatTime(e.startsAt) : `${formatDayShort(e.startsAt, false)}, ${formatTime(e.startsAt)}`;
   return (
     <div className="rounded-tile bg-surface p-4 text-ink shadow-[0_12px_40px_rgba(30,20,66,0.25)]">
       <div className="mb-3 flex items-baseline justify-between gap-2">

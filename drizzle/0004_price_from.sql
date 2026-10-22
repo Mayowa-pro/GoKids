@@ -1,0 +1,1 @@
+ALTER TABLE `events` ADD `price_from` integer;

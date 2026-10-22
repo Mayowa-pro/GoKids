@@ -8,6 +8,7 @@ import { addDays, londonDateKey, londonMidnight } from "../lib/time";
 import { slugify } from "../lib/slug";
 import { db } from "./index";
 import { events, type NewEvent } from "./schema";
+import { priceFromText } from "../lib/price";
 
 type Sample = {
   t: string; v: string; area: string; pc: string; lat: number; lng: number;
@@ -71,6 +72,7 @@ export function buildSamples(now = new Date()): NewEvent[] {
         endsAt: at(day, s.e),
         isFree: s.price === null,
         priceText: s.price,
+        priceFrom: priceFromText(s.price === null, s.price),
         minAge: s.a[0],
         maxAge: s.a[1],
         organiser: s.org,

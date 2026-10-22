@@ -29,6 +29,8 @@ export async function listEvents(region: string, f: EventFilters, now = new Date
     lte(events.minAge, max),
     gte(events.maxAge, min),
     f.free ? eq(events.isFree, true) : undefined,
+    // A budget keeps free events and ones whose cheapest ticket fits; unknown prices are left out.
+    !f.free && f.max ? or(eq(events.isFree, true), lte(events.priceFrom, f.max * 100)) : undefined,
     q
       ? or(like(events.title, q), like(events.venue, q), like(events.category, q), like(events.organiser, q), like(events.description, q))
       : undefined,

@@ -123,7 +123,7 @@ function Form({ areas, onReset }: { areas: Area[]; onReset: () => void }) {
         </div>
         {!isFree && (
           <Field id="priceText" label="How much?" error={err.priceText}>
-            <input {...a("priceText")} className={input} placeholder="£5 per child" maxLength={40} />
+            <input {...a("priceText")} className={input} placeholder="£5 per child (cheapest price first)" maxLength={40} />
           </Field>
         )}
       </fieldset>

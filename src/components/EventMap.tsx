@@ -17,11 +17,24 @@ function css(name: string, fallback: string) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
 }
 
-function Recenter({ origin }: { origin: LatLng | null }) {
+/** Zooms to show "you" and the closest few events together. */
+function Recenter({ origin, nearest }: { origin: LatLng | null; nearest: LatLng[] }) {
   const map = useMap();
+  const key = origin ? `${origin.lat},${origin.lng}|${nearest.map((p) => `${p.lat},${p.lng}`).join(";")}` : "";
   useEffect(() => {
-    if (origin) map.flyTo([origin.lat, origin.lng], Math.max(map.getZoom(), 13), { duration: 0.6 });
-  }, [origin, map]);
+    if (!origin) return;
+    const pts: [number, number][] = [[origin.lat, origin.lng], ...nearest.map((p) => [p.lat, p.lng] as [number, number])];
+    // The map may have been hidden until now (phones), so let it measure itself first.
+    const t = setTimeout(() => {
+      map.invalidateSize();
+      const size = map.getSize();
+      if (!size.x || !size.y) return;
+      if (pts.length === 1) map.setView(pts[0], 14);
+      else map.fitBounds(pts, { padding: [36, 36], maxZoom: 15 });
+    }, 50);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key, map]);
   return null;
 }
 
@@ -30,13 +43,22 @@ type Props = {
   center: LatLng;
   zoom: number;
   origin: LatLng | null;
+  /** The closest events to `origin`, drawn larger. */
+  nearestIds?: number[];
   highlighted: number | null;
   onHover: (id: number | null) => void;
 };
 
-export default function EventMap({ events, center, zoom, origin, highlighted, onHover }: Props) {
+export default function EventMap({ events, center, zoom, origin, nearestIds = [], highlighted, onHover }: Props) {
   const router = useRouter();
-  const colors = { free: css("--yolk", "#ffcc33"), paid: css("--paid", "#6d43cf"), ring: css("--cobalt", "#1f4fbf"), surface: css("--surface", "#fff") };
+  const colors = {
+    free: css("--yolk", "#ffd23f"),
+    paid: css("--paid", "#b3261e"),
+    ring: css("--cobalt", "#5b3fd1"),
+    surface: css("--surface", "#fff"),
+    you: css("--coral", "#ff6b6b"),
+  };
+  const nearest = nearestIds.map((id) => events.find((e) => e.id === id)).filter((e): e is PublicEvent => !!e);
 
   // Featured pins draw last so they sit on top.
   const ordered = [...events].sort((a, b) => Number(a.featured) - Number(b.featured));
@@ -44,22 +66,18 @@ export default function EventMap({ events, center, zoom, origin, highlighted, on
   return (
     <MapContainer center={[center.lat, center.lng]} zoom={zoom} scrollWheelZoom={false} className="h-full w-full rounded-xl">
       <TileLayer url={TILES} attribution={ATTRIBUTION} />
-      <Recenter origin={origin} />
-      {origin && (
-        <CircleMarker center={[origin.lat, origin.lng]} radius={6} pathOptions={{ color: colors.surface, weight: 2, fillColor: colors.ring, fillOpacity: 1 }}>
-          <Tooltip>You</Tooltip>
-        </CircleMarker>
-      )}
+      <Recenter origin={origin} nearest={nearest} />
       {ordered.map((e) => {
         const hl = highlighted === e.id;
+        const close = nearestIds.includes(e.id);
         return (
           <CircleMarker
             key={e.id}
             center={[e.lat, e.lng]}
-            radius={hl ? 12 : e.featured ? 9 : 7}
+            radius={hl ? 12 : close ? 10 : e.featured ? 9 : 7}
             pathOptions={{
-              color: e.featured ? colors.ring : colors.surface,
-              weight: e.featured ? 3 : 2,
+              color: e.featured || close ? colors.ring : colors.surface,
+              weight: e.featured || close ? 3 : 2,
               fillColor: e.isFree ? colors.free : colors.paid,
               fillOpacity: 1,
             }}
@@ -77,6 +95,14 @@ export default function EventMap({ events, center, zoom, origin, highlighted, on
           </CircleMarker>
         );
       })}
+      {/* "You" goes last so it sits on top of the event pins. */}
+      {origin && (
+        <CircleMarker center={[origin.lat, origin.lng]} radius={10} pathOptions={{ color: colors.surface, weight: 3, fillColor: colors.you, fillOpacity: 1 }}>
+          <Tooltip permanent direction="top" offset={[0, -10]}>
+            You are here
+          </Tooltip>
+        </CircleMarker>
+      )}
     </MapContainer>
   );
 }

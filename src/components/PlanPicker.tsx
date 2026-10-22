@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { AGE_OPTIONS, DAY_STRIP_DAYS, toSearch, type EventFilters } from "@/lib/filters";
+import { BUDGET_OPTIONS } from "@/lib/price";
 import type { Area } from "@/lib/site";
 import { addDays, londonMidnight } from "@/lib/time";
 
@@ -13,7 +14,7 @@ const pill = (on: boolean) =>
 function dayParts(key: string) {
   const noon = new Date(londonMidnight(key).getTime() + 12 * 3600_000);
   const f = (o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", ...o }).format(noon);
-  return { dow: f({ weekday: "short" }), num: f({ day: "numeric" }), long: f({ weekday: "long", day: "numeric", month: "long" }) };
+  return { dow: f({ weekday: "short" }), num: f({ day: "numeric" }), long: `${f({ weekday: "long" })} ${f({ day: "numeric" })} ${f({ month: "long" })}` };
 }
 
 /** The "Who's coming?" and "When?" questions at the top of the page. */
@@ -109,14 +110,24 @@ export function SearchRow({ filters, areas }: { filters: EventFilters; areas: Ar
           autoComplete="off"
         />
       </label>
-      <Link
-        href={href({ free: !filters.free })}
-        scroll={false}
-        aria-current={filters.free ? "true" : undefined}
-        className={`flex min-h-11 items-center rounded-2xl px-4 text-[15px] font-semibold ${filters.free ? "bg-yolk text-yolk-ink" : "bg-cobalt-soft hover:bg-[var(--tile-3)]"}`}
-      >
-        Free only
-      </Link>
+      <label className="flex min-h-11 items-center gap-2 rounded-2xl bg-cobalt-soft pl-3.5 pr-1.5 text-[15px] font-semibold">
+        Budget
+        <select
+          id="budget"
+          value={filters.free ? "free" : filters.max ? String(filters.max) : ""}
+          onChange={(e) => {
+            const v = e.target.value;
+            router.replace(href({ free: v === "free", max: v === "free" || !v ? undefined : Number(v) }), { scroll: false });
+          }}
+          className={`rounded-xl px-2 py-1.5 ${filters.free || filters.max ? "bg-yolk text-yolk-ink" : "bg-surface"}`}
+        >
+          {BUDGET_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+      </label>
       <label className="flex min-h-11 items-center gap-2 rounded-2xl bg-cobalt-soft pl-3.5 pr-1.5 text-[15px] font-semibold">
         Near
         <select

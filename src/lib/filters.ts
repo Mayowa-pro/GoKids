@@ -22,6 +22,8 @@ export type EventFilters = {
   when: When;
   age: AgeBand;
   free: boolean;
+  /** Most a parent wants to pay, in pounds (cheapest ticket). */
+  max?: number;
   q: string;
   near?: string;
   /** "YYYY-MM-DD", only when `when` is "date". */
@@ -48,6 +50,7 @@ export function parseFilters(params: RawParams, now = new Date()): EventFilters 
     date,
     age: AGE_OPTIONS.some((o) => o.value === age) ? (age as AgeBand) : "all",
     free: first(params.free) === "1",
+    max: ["5", "10", "20"].includes(first(params.max) ?? "") ? Number(first(params.max)) : undefined,
     q: (first(params.q) ?? "").trim().slice(0, 80),
     near: first(params.near) || undefined,
   };
@@ -91,6 +94,7 @@ export function toSearch(f: Partial<EventFilters>): string {
   else if (f.when && f.when !== DEFAULT_WHEN && f.when !== "date") p.set("when", f.when);
   if (f.age && f.age !== "all") p.set("age", f.age);
   if (f.free) p.set("free", "1");
+  else if (f.max) p.set("max", String(f.max));
   if (f.q) p.set("q", f.q);
   if (f.near) p.set("near", f.near);
   const s = p.toString();

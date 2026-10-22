@@ -10,10 +10,12 @@ import { geocodePostcode } from "../lib/postcode";
 import { LIVE_REGIONS } from "../lib/site";
 import { slugify } from "../lib/slug";
 import { covers } from "../lib/dedupe";
+import { priceFromText } from "../lib/price";
 import { londonMidnight, weekday } from "../lib/time";
 import { scoutedEventSchema } from "../lib/validation";
 import { db } from "./index";
 import { removeDuplicates } from "./dedupe";
+import { fillPrices } from "./prices";
 import { events } from "./schema";
 
 const DIR = path.join(process.cwd(), "data", "scouted");
@@ -99,6 +101,7 @@ export async function importScouted(dir = DIR, origin: "scout" | "curated" = "sc
         repeatUntil,
         isFree: e.isFree,
         priceText: e.isFree ? null : (e.priceText ?? "See website"),
+        priceFrom: e.priceFrom !== undefined ? Math.round(e.priceFrom * 100) : priceFromText(e.isFree, e.priceText),
         minAge: e.minAge,
         maxAge: e.maxAge,
         organiser: e.organiser,
@@ -134,6 +137,7 @@ if (process.argv[1]?.endsWith("import-scouted.ts")) {
   importScouted(CURATED_DIR, "curated")
     .then(() => importScouted())
     .then(() => removeDuplicates())
+    .then(() => fillPrices())
     .catch((e) => {
     console.error(e);
     process.exit(1);

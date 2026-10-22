@@ -79,6 +79,8 @@ export const scoutedEventSchema = z
     repeatUntil: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
     isFree: z.boolean(),
     priceText: z.string().trim().max(40).optional(),
+    /** Cheapest ticket in pounds, when the wording doesn't make it clear. */
+    priceFrom: z.number().min(0).max(500).optional(),
     minAge: z.number().int().min(0).max(17),
     maxAge: z.number().int().min(0).max(17),
     organiser: z.string().trim().min(2).max(80),

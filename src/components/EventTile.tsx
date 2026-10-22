@@ -22,7 +22,7 @@ type Props = {
 };
 
 export function EventTile({ event: e, areaName, distance, highlighted, onHover, showDay }: Props) {
-  const day = showDay ? `${formatDayShort(e.startsAt).replace(/ \w+$/, "")}, ` : "";
+  const day = showDay ? `${formatDayShort(e.startsAt, false)}, ` : "";
   const when = isMultiDay(e) ? `Daily to ${formatShortDate(e.endsAt)}` : `${day}${formatTime(e.startsAt)}`;
   return (
     <Link
@@ -50,7 +50,7 @@ export function EventTile({ event: e, areaName, distance, highlighted, onHover, 
           {distance && <span className="block font-semibold">{distance}</span>}
         </p>
         {e.timesNote && <p className="text-[13px] font-semibold leading-snug">{e.timesNote}</p>}
-        {e.alsoOn?.length ? <p className="text-[13px] font-semibold leading-snug">Also on {e.alsoOn.map(formatDayShort).join(", ")}</p> : null}
+        {e.alsoOn?.length ? <p className="text-[13px] font-semibold leading-snug">Also on {e.alsoOn.map((d) => formatDayShort(d)).join(", ")}</p> : null}
         <div className="mt-1 flex flex-wrap gap-1 text-[12px] font-bold">
           {e.repeatsWeekly && <span className="rounded-lg bg-surface/70 px-2 py-0.5">{repeatLabel(e)}</span>}
           <span className="rounded-lg bg-surface/70 px-2 py-0.5">Ages {e.minAge}–{e.maxAge}</span>

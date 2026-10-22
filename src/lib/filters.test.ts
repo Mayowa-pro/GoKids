@@ -57,3 +57,12 @@ describe("picking one day", () => {
     expect(parseFilters({ day: "soon" }, now).when).toBe("today");
   });
 });
+
+describe("budget", () => {
+  it("reads a price limit and keeps it in the address", () => {
+    const f = parseFilters({ max: "10" });
+    expect(f.max).toBe(10);
+    expect(toSearch(f)).toBe("?max=10");
+    expect(parseFilters({ max: "7" }).max).toBeUndefined();
+  });
+});

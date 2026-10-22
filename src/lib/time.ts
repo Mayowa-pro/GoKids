@@ -57,9 +57,11 @@ export function formatShortDate(at: Date): string {
   return new Intl.DateTimeFormat("en-GB", { timeZone: TZ, day: "numeric", month: "short" }).format(at);
 }
 
-/** "Mon 26 Oct". */
-export function formatDayShort(at: Date): string {
-  return new Intl.DateTimeFormat("en-GB", { timeZone: TZ, weekday: "short", day: "numeric", month: "short" }).format(at);
+/** "Mon 26 Oct", or "Mon 26" without the month. Built from parts so server and browser agree (they punctuate differently). */
+export function formatDayShort(at: Date, withMonth = true): string {
+  const parts = new Intl.DateTimeFormat("en-GB", { timeZone: TZ, weekday: "short", day: "numeric", month: "short" }).formatToParts(at);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+  return [get("weekday"), get("day"), withMonth ? get("month") : ""].filter(Boolean).join(" ");
 }
 
 /** True for events that run over several days, like a half-term trail. */
