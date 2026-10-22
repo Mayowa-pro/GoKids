@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { REGIONS } from "@/lib/site";
+import { LIVE_REGIONS } from "@/lib/site";
 
 export default function Home() {
   return (
@@ -25,27 +25,18 @@ export default function Home() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="mb-4 font-display text-2xl font-bold">Where we are</h2>
+        <h2 className="mb-4 font-display text-2xl font-bold">Pick your area</h2>
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {REGIONS.map((r) => (
+          {LIVE_REGIONS.map((r) => (
             <li key={r.slug}>
-              {r.live ? (
-                <Link href={`/${r.slug}`} className="flex h-full items-center justify-between gap-3 rounded-tile bg-[var(--tile-3)] p-5 hover:outline hover:outline-[3px] hover:outline-cobalt">
-                  <span>
-                    <span className="block font-display text-xl font-semibold">{r.name}</span>
-                    <span className="text-sm">{r.areas.map((a) => a.name).join(" · ")}</span>
-                  </span>
-                  <span className="rounded-xl bg-yolk px-2.5 py-1 text-xs font-bold text-yolk-ink">Live</span>
-                </Link>
-              ) : (
-                <div className="flex h-full items-center justify-between rounded-tile bg-cobalt-soft p-5 text-muted">
-                  <span className="font-display text-xl font-semibold">{r.name}</span>
-                  <span className="text-xs font-bold uppercase tracking-wider">Coming soon</span>
-                </div>
-              )}
+              <Link href={`/${r.slug}`} className="flex h-full flex-col gap-1 rounded-tile bg-[var(--tile-3)] p-5 hover:outline hover:outline-[3px] hover:outline-cobalt">
+                <span className="font-display text-xl font-semibold">{r.name}</span>
+                <span className="text-sm">{r.areas.map((a) => a.name).join(" · ")}</span>
+              </Link>
             </li>
           ))}
         </ul>
+        <p className="mt-4 text-muted">More towns across the Midlands are coming soon.</p>
       </section>
     </>
   );
