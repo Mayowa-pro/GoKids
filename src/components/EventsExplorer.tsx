@@ -6,7 +6,7 @@ import type { PublicEvent } from "@/db/queries";
 import { distanceKm, formatMiles, type LatLng } from "@/lib/geo";
 import type { Area } from "@/lib/site";
 import { formatDayHeading, londonDateKey } from "@/lib/time";
-import { EventCard } from "./EventCard";
+import { EventTile } from "./EventTile";
 
 const EventMap = dynamic(() => import("./EventMap"), {
   ssr: false,
@@ -14,6 +14,7 @@ const EventMap = dynamic(() => import("./EventMap"), {
 });
 
 type Props = {
+  heading: string;
   events: PublicEvent[];
   areas: Area[];
   near?: string;
@@ -22,7 +23,7 @@ type Props = {
   todayKey: string;
 };
 
-export function EventsExplorer({ events, areas, near, center, zoom, todayKey }: Props) {
+export function EventsExplorer({ heading, events, areas, near, center, zoom, todayKey }: Props) {
   const [hovered, setHovered] = useState<number | null>(null);
   const [view, setView] = useState<"list" | "map">("list");
   const [myLocation, setMyLocation] = useState<LatLng | null>(null);
@@ -77,51 +78,54 @@ export function EventsExplorer({ events, areas, near, center, zoom, todayKey }: 
           don&apos;t plan a day out around them.
         </p>
       )}
-      <div className="mb-3 flex flex-wrap items-center gap-3 text-sm">
-        <span className="font-semibold">
-          {events.length} event{events.length === 1 ? "" : "s"} · {freeCount} free
-        </span>
-        <button type="button" onClick={locate} className="rounded-full border border-line bg-surface px-3 py-1.5 font-semibold hover:border-cobalt">
-          {myLocation ? "Using your location" : "Use my location"}
-        </button>
-        {locError && <span className="text-danger">{locError}</span>}
-        <div className="ml-auto flex gap-1.5 lg:hidden" role="group" aria-label="View">
+      <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+        <h2 className="mr-auto font-display text-2xl font-bold leading-tight">{heading}</h2>
+        <div className="flex gap-1.5 lg:hidden" role="group" aria-label="Show as">
           {(["list", "map"] as const).map((v) => (
             <button
               key={v}
               type="button"
               aria-pressed={view === v}
               onClick={() => setView(v)}
-              className="rounded-full border border-line bg-surface px-4 py-1.5 font-semibold capitalize aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-bg"
+              className="min-h-11 rounded-2xl bg-cobalt-soft px-4 font-semibold aria-pressed:bg-cobalt aria-pressed:text-surface"
             >
-              {v}
+              {v === "list" ? "Ideas" : "Map"}
             </button>
           ))}
         </div>
+      </div>
+      <div className="mb-4 flex flex-wrap items-center gap-3 text-sm">
+        <span className="font-semibold text-muted">
+          {events.length} idea{events.length === 1 ? "" : "s"} · {freeCount} free
+        </span>
+        <button type="button" onClick={locate} className="min-h-10 rounded-2xl bg-cobalt-soft px-3.5 font-semibold text-cobalt">
+          {myLocation ? "Using your location" : "Use my location"}
+        </button>
+        {locError && <span className="text-danger">{locError}</span>}
       </div>
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_420px]">
         <div className={`${view === "map" ? "hidden lg:flex" : "flex"} min-w-0 flex-col gap-6`} aria-live="polite">
           {days.length === 0 && (
-            <div className="rounded-2xl border border-dashed border-line bg-surface p-8 text-center text-muted">
-              <strong className="text-ink">Nothing matches those filters.</strong>
+            <div className="rounded-tile bg-cobalt-soft p-8 text-center text-muted">
+              <strong className="text-ink">Nothing on for that choice.</strong>
               <br />
-              Try a wider date range, another age group, or switch off &ldquo;Free only&rdquo;.
+              Try another day, &ldquo;Next 7 days&rdquo;, another age group, or switch off &ldquo;Free only&rdquo;.
             </div>
           )}
           {days.map(([key, list]) => {
             const h = formatDayHeading(key, todayKey);
             return (
               <section key={key}>
-                <h2 className="mb-2.5 flex items-baseline gap-2.5 font-display text-lg font-semibold">
-                  {h.label}
-                  <span className="font-sans text-[13px] font-medium text-muted">
-                    {h.date} · {list.length} event{list.length === 1 ? "" : "s"}
-                  </span>
-                </h2>
-                <div className="flex flex-col gap-2.5">
+                {days.length > 1 && (
+                  <h3 className="mb-2.5 flex items-baseline gap-2.5 font-display text-lg font-semibold">
+                    {h.label}
+                    <span className="font-sans text-[13px] font-medium text-muted">{h.date}</span>
+                  </h3>
+                )}
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                   {list.map((e) => (
-                    <EventCard
+                    <EventTile
                       key={e.id}
                       event={e}
                       areaName={areaName(e.area)}
@@ -137,7 +141,7 @@ export function EventsExplorer({ events, areas, near, center, zoom, todayKey }: 
         </div>
 
         <aside className={`${view === "list" ? "hidden lg:block" : "block"} lg:sticky lg:top-20`}>
-          <div className="h-[65vh] rounded-2xl border border-line bg-surface p-2 lg:h-[calc(100vh-7rem)]">
+          <div className="h-[65vh] overflow-hidden rounded-tile bg-cobalt-soft p-2 lg:h-[calc(100vh-7rem)]">
             <EventMap events={events} center={center} zoom={zoom} origin={origin} highlighted={hovered} onHover={setHovered} />
           </div>
           <div className="mt-2 flex flex-wrap gap-4 px-1 text-xs text-muted">

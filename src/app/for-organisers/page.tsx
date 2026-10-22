@@ -14,7 +14,7 @@ export default function OrganisersPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
       <p className="label">For clubs, classes and venues</p>
-      <h1 className="mt-2 max-w-[22ch] font-display text-4xl font-extrabold leading-tight tracking-tight">Get your event in front of local parents</h1>
+      <h1 className="mt-2 max-w-[22ch] font-display text-4xl font-bold leading-tight tracking-tight">Get your event in front of local parents</h1>
       <p className="mt-3 max-w-[60ch] text-lg text-muted">
         Parents use {SITE.name} to plan the week. Listing is always free. Boosting puts you first.
       </p>
@@ -23,7 +23,7 @@ export default function OrganisersPage() {
           <div key={t.name} className={`flex flex-col rounded-2xl bg-surface p-6 ${t.best ? "border-2 border-cobalt" : "border border-line"}`}>
             <h2 className="font-display text-xl font-semibold">{t.name}</h2>
             <p className="mt-2 tabular-nums">
-              <span className="font-display text-4xl font-extrabold">{t.price}</span> <span className="text-muted">{t.per}</span>
+              <span className="font-display text-4xl font-bold">{t.price}</span> <span className="text-muted">{t.per}</span>
             </p>
             <ul className="mt-4 flex flex-1 flex-col gap-2 text-sm">
               {t.points.map((p) => <li key={p}>{p}</li>)}

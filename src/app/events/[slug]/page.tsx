@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { PriceBadge } from "@/components/PriceBadge";
+import { tileColour } from "@/components/EventTile";
 import { getEventBySlug } from "@/db/queries";
 import { SITE, getRegion } from "@/lib/site";
 import { repeatLabel } from "@/lib/recurrence";
@@ -64,12 +65,12 @@ async function EventDetail({ params }: { params: PageProps<"/events/[slug]">["pa
       )}
       <div className="mt-5">
         {e.featured ? <div className="label !text-cobalt">★ Featured listing</div> : <div className="label">{e.category}</div>}
-        <h1 className="mt-1.5 font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">{e.title}</h1>
+        <h1 className="mt-1.5 font-display text-3xl font-bold leading-tight tracking-tight sm:text-4xl">{e.title}</h1>
         <div className="mt-3">
           <PriceBadge isFree={e.isFree} priceText={e.priceText} />
         </div>
       </div>
-      <dl className="mt-6 grid grid-cols-[auto_minmax(0,1fr)] gap-x-5 gap-y-3 rounded-2xl border border-line bg-surface p-5">
+      <dl className={`mt-6 grid grid-cols-[auto_minmax(0,1fr)] gap-x-5 gap-y-3 rounded-tile p-5 ${tileColour(e.id)}`}>
         <dt className="label pt-0.5">When</dt>
         <dd>
           {e.repeatsWeekly && (
@@ -98,11 +99,11 @@ async function EventDetail({ params }: { params: PageProps<"/events/[slug]">["pa
       <p className="mt-6 max-w-[62ch] text-base">{e.description}</p>
       <div className="mt-6 flex flex-wrap gap-3">
         {e.bookingUrl && (
-          <a href={e.bookingUrl} target="_blank" rel="noopener noreferrer" className="rounded-full bg-cobalt px-5 py-2.5 font-semibold text-surface hover:opacity-90">
+          <a href={e.bookingUrl} target="_blank" rel="noopener noreferrer" className="flex min-h-12 items-center rounded-2xl bg-cobalt px-5 font-semibold text-white hover:opacity-90">
             Book or find out more
           </a>
         )}
-        <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="rounded-full border border-line bg-surface px-5 py-2.5 font-semibold hover:border-cobalt">
+        <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="flex min-h-12 items-center rounded-2xl bg-cobalt-soft px-5 font-semibold text-cobalt hover:opacity-90">
           Directions
         </a>
       </div>

@@ -7,13 +7,14 @@ export const WHEN_OPTIONS = [
   { value: "week", label: "Next 7 days" },
   { value: "all", label: "Everything" },
 ] as const;
-export type When = (typeof WHEN_OPTIONS)[number]["value"];
+/** "date" means one chosen day, picked from the day strip. */
+export type When = (typeof WHEN_OPTIONS)[number]["value"] | "date";
 
 export const AGE_OPTIONS = [
-  { value: "all", label: "All ages", min: 0, max: 99 },
-  { value: "0-4", label: "0–4", min: 0, max: 4 },
-  { value: "5-11", label: "5–11", min: 5, max: 11 },
-  { value: "12+", label: "12+", min: 12, max: 99 },
+  { value: "all", label: "Everyone", min: 0, max: 99 },
+  { value: "0-4", label: "Under 5s", min: 0, max: 4 },
+  { value: "5-11", label: "5 to 11", min: 5, max: 11 },
+  { value: "12+", label: "12 and over", min: 12, max: 99 },
 ] as const;
 export type AgeBand = (typeof AGE_OPTIONS)[number]["value"];
 
@@ -23,16 +24,28 @@ export type EventFilters = {
   free: boolean;
   q: string;
   near?: string;
+  /** "YYYY-MM-DD", only when `when` is "date". */
+  date?: string;
 };
+
+/** The page opens on today's ideas, like a "what shall we do today?" planner. */
+export const DEFAULT_WHEN: When = "today";
+
+/** How many days ahead the day strip offers. */
+export const DAY_STRIP_DAYS = 14;
 
 type RawParams = Record<string, string | string[] | undefined>;
 const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
 
-export function parseFilters(params: RawParams): EventFilters {
+export function parseFilters(params: RawParams, now = new Date()): EventFilters {
   const when = first(params.when);
   const age = first(params.age);
+  const day = first(params.day);
+  const today = londonDateKey(now);
+  const date = day && /^\d{4}-\d{2}-\d{2}$/.test(day) && day >= today && day <= addDays(today, 366) ? day : undefined;
   return {
-    when: WHEN_OPTIONS.some((o) => o.value === when) ? (when as When) : "week",
+    when: date ? "date" : WHEN_OPTIONS.some((o) => o.value === when) ? (when as When) : DEFAULT_WHEN,
+    date,
     age: AGE_OPTIONS.some((o) => o.value === age) ? (age as AgeBand) : "all",
     free: first(params.free) === "1",
     q: (first(params.q) ?? "").trim().slice(0, 80),
@@ -41,10 +54,14 @@ export function parseFilters(params: RawParams): EventFilters {
 }
 
 /** The [from, to) window of instants a "when" filter covers, in UK days. */
-export function dateWindow(when: When, now: Date): { from: Date; to: Date } {
+export function dateWindow(when: When, now: Date, date?: string): { from: Date; to: Date } {
   const today = londonDateKey(now);
   const day = (k: string) => londonMidnight(k);
   switch (when) {
+    case "date": {
+      const d = date ?? today;
+      return { from: d === today ? now : day(d), to: day(addDays(d, 1)) };
+    }
     case "today":
       return { from: now, to: day(addDays(today, 1)) };
     case "tomorrow":
@@ -70,7 +87,8 @@ export function ageRange(age: AgeBand): { min: number; max: number } {
 /** Build a query string, dropping defaults so URLs stay short and shareable. */
 export function toSearch(f: Partial<EventFilters>): string {
   const p = new URLSearchParams();
-  if (f.when && f.when !== "week") p.set("when", f.when);
+  if (f.when === "date" && f.date) p.set("day", f.date);
+  else if (f.when && f.when !== DEFAULT_WHEN && f.when !== "date") p.set("when", f.when);
   if (f.age && f.age !== "all") p.set("age", f.age);
   if (f.free) p.set("free", "1");
   if (f.q) p.set("q", f.q);

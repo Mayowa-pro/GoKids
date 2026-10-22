@@ -3,7 +3,7 @@ import { dateWindow, parseFilters, toSearch } from "./filters";
 
 describe("parseFilters", () => {
   it("falls back to safe defaults for junk input", () => {
-    expect(parseFilters({ when: "never", age: "99", free: "yes" })).toEqual({ when: "week", age: "all", free: false, q: "", near: undefined });
+    expect(parseFilters({ when: "never", age: "99", free: "yes" })).toEqual({ when: "today", age: "all", free: false, q: "", near: undefined });
   });
 
   it("reads valid values and trims search", () => {
@@ -13,7 +13,7 @@ describe("parseFilters", () => {
   });
 
   it("round-trips through the URL and drops defaults", () => {
-    expect(toSearch({ when: "week", age: "all" })).toBe("");
+    expect(toSearch({ when: "today", age: "all" })).toBe("");
     const s = toSearch({ when: "today", free: true, q: "lego" });
     expect(parseFilters(Object.fromEntries(new URLSearchParams(s)))).toMatchObject({ when: "today", free: true, q: "lego" });
   });
@@ -39,5 +39,21 @@ describe("dateWindow", () => {
     const w = dateWindow("weekend", sunday);
     expect(w.from).toEqual(sunday);
     expect(w.to.toISOString()).toBe("2026-10-26T00:00:00.000Z");
+  });
+});
+
+describe("picking one day", () => {
+  const now = new Date("2026-10-22T10:00:00Z");
+  it("reads a day from the address and covers just that day", () => {
+    const f = parseFilters({ day: "2026-10-24", when: "today" }, now);
+    expect(f.when).toBe("date");
+    const w = dateWindow(f.when, now, f.date);
+    expect(w.from.toISOString()).toBe("2026-10-23T23:00:00.000Z");
+    expect(w.to.toISOString()).toBe("2026-10-24T23:00:00.000Z");
+    expect(toSearch(f)).toBe("?day=2026-10-24");
+  });
+  it("ignores days in the past or nonsense", () => {
+    expect(parseFilters({ day: "2026-10-01" }, now).when).toBe("today");
+    expect(parseFilters({ day: "soon" }, now).when).toBe("today");
   });
 });

@@ -1,35 +1,51 @@
 @import "tailwindcss";
 
-/* Palette: Potteries cobalt transferware blue, with a sunny yolk yellow that always means "free". */
+/* Palette "Playground pop": purple with coral and sunny yellow. Yellow always means "free". */
 :root {
-  --bg: #f5f7fb;
+  --bg: #ffffff;
   --surface: #ffffff;
-  --ink: #14203a;
-  --muted: #5b6782;
-  --line: #dde3ef;
-  --cobalt: #1f4fbf;
-  --cobalt-soft: #e6edfb;
-  --yolk: #ffcc33;
-  --yolk-ink: #5a4300;
-  --paid: #6d43cf;
-  --paid-soft: #f0eafc;
+  --ink: #1e1442;
+  --muted: #5a5080;
+  --line: #e7e2f7;
+  --cobalt: #5b3fd1;
+  --cobalt-soft: #f1edff;
+  --yolk: #ffd23f;
+  --yolk-ink: #3b2c00;
+  --paid: #b3261e;
+  --paid-soft: #ffe3e3;
   --danger: #b42318;
+  --coral: #ff6b6b;
+  --hero: #5b3fd1;
+  --hero-ink: #ffffff;
+  --tile-1: #ffe3e3;
+  --tile-2: #ddf7ec;
+  --tile-3: #e2daff;
+  --tile-4: #fff1bf;
+  --tile-5: #dcefff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0e1424;
-    --surface: #161e33;
-    --ink: #e8edf8;
-    --muted: #9aa6c2;
-    --line: #26304a;
-    --cobalt: #7aa2ff;
-    --cobalt-soft: #1c2a4d;
-    --yolk: #ffd257;
+    --bg: #130d2b;
+    --surface: #1d1540;
+    --ink: #f1edff;
+    --muted: #b7aedb;
+    --line: #2f2560;
+    --cobalt: #b5a4ff;
+    --cobalt-soft: #2a2059;
+    --yolk: #ffd23f;
     --yolk-ink: #2c2100;
-    --paid: #b597ff;
-    --paid-soft: #2a2347;
+    --paid: #ffb4ab;
+    --paid-soft: #4a1f2a;
     --danger: #ff8a80;
+    --coral: #ff8f8f;
+    --hero: #3b2a8f;
+    --hero-ink: #ffffff;
+    --tile-1: #3d2133;
+    --tile-2: #173a33;
+    --tile-3: #2e2566;
+    --tile-4: #3b3216;
+    --tile-5: #182f4a;
     color-scheme: dark;
   }
 }
@@ -47,8 +63,12 @@
   --color-paid: var(--paid);
   --color-paid-soft: var(--paid-soft);
   --color-danger: var(--danger);
+  --color-coral: var(--coral);
+  --color-hero: var(--hero);
+  --color-hero-ink: var(--hero-ink);
   --font-sans: var(--font-body), system-ui, sans-serif;
   --font-display: var(--font-display), "Trebuchet MS", system-ui, sans-serif;
+  --radius-tile: 24px;
 }
 
 body {
@@ -78,3 +98,6 @@ h1, h2, h3 { text-wrap: balance; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }

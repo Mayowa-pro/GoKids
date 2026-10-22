@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Figtree } from "next/font/google";
+import { Fredoka, Nunito } from "next/font/google";
 import Link from "next/link";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 
-const display = Bricolage_Grotesque({ variable: "--font-display", subsets: ["latin"], weight: ["600", "800"] });
-const body = Figtree({ variable: "--font-body", subsets: ["latin"] });
+const display = Fredoka({ variable: "--font-display", subsets: ["latin"], weight: ["500", "600", "700"] });
+const body = Nunito({ variable: "--font-body", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -19,6 +19,7 @@ function Logo() {
     <svg width="30" height="30" viewBox="0 0 34 34" aria-hidden="true">
       <path d="M17 2c-6 0-11 4.6-11 10.5C6 20 17 32 17 32s11-12 11-19.5C28 6.6 23 2 17 2z" fill="var(--cobalt)" />
       <circle cx="17" cy="12.5" r="4.5" fill="var(--yolk)" />
+      <circle cx="27" cy="6" r="3.5" fill="var(--coral)" />
     </svg>
   );
 }
@@ -30,9 +31,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-surface focus:px-3 focus:py-2">
           Skip to content
         </a>
-        <header className="sticky top-0 z-[1000] border-b border-line bg-surface">
+        <header className="sticky top-0 z-[1000] bg-surface">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3">
-            <Link href="/" className="flex items-center gap-2 font-display text-xl font-extrabold tracking-tight">
+            <Link href="/" className="flex items-center gap-2 font-display text-2xl font-bold text-cobalt">
               <Logo />
               {SITE.name}
             </Link>
@@ -40,7 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/for-organisers" className="hidden rounded-full px-3 py-2 hover:bg-cobalt-soft sm:inline-block">
                 For organisers
               </Link>
-              <Link href="/submit" className="rounded-full bg-cobalt px-4 py-2 text-surface hover:opacity-90">
+              <Link href="/submit" className="rounded-2xl bg-cobalt px-4 py-2.5 text-surface hover:opacity-90">
                 List an event
               </Link>
             </nav>

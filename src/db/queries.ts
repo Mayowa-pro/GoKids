@@ -19,7 +19,7 @@ function toPublic(e: EventRow, now: Date): PublicEvent {
 }
 
 export async function listEvents(region: string, f: EventFilters, now = new Date()): Promise<PublicEvent[]> {
-  const { from, to } = dateWindow(f.when, now);
+  const { from, to } = dateWindow(f.when, now, f.date);
   const { min, max } = ageRange(f.age);
   const q = f.q ? `%${f.q.replace(/[%_]/g, "")}%` : null;
 
@@ -94,4 +94,15 @@ export async function listUpcomingSlugs(now = new Date()) {
     .select({ slug: events.slug, region: events.region })
     .from(events)
     .where(and(eq(events.status, "approved"), or(gte(events.endsAt, now), eq(events.repeatsWeekly, true))));
+}
+
+/** The next few one-off events after `after`, for the "Coming up" box. */
+export async function listComingUp(region: string, after: Date, limit = 4, now = new Date()): Promise<PublicEvent[]> {
+  const rows = await db
+    .select()
+    .from(events)
+    .where(and(eq(events.region, region), eq(events.status, "approved"), eq(events.repeatsWeekly, false), gte(events.startsAt, after)))
+    .orderBy(asc(events.startsAt))
+    .limit(limit * 4);
+  return mergeRepeats(rows.map((r) => toPublic(r, now))).slice(0, limit);
 }
