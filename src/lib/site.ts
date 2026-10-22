@@ -7,7 +7,10 @@ export const SITE = {
   tagline: "Free and paid family events near you",
   description:
     "Every local kids' event in one map and feed, free for parents. Starting in Stoke-on-Trent, coming to the rest of the Midlands.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  // On Vercel the live address (e.g. go-kids-pi.vercel.app) is filled in automatically.
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000"),
 } as const;
 
 export type Area = { slug: string; name: string; lat: number; lng: number };

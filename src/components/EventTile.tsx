@@ -17,17 +17,21 @@ type Props = {
   distance?: string;
   highlighted?: boolean;
   onHover?: (id: number | null) => void;
+  /** Add the day ("Fri 23") for lists that mix several days. */
+  showDay?: boolean;
 };
 
-export function EventTile({ event: e, areaName, distance, highlighted, onHover }: Props) {
-  const when = isMultiDay(e) ? `Daily to ${formatShortDate(e.endsAt)}` : formatTime(e.startsAt);
+export function EventTile({ event: e, areaName, distance, highlighted, onHover, showDay }: Props) {
+  const day = showDay ? `${formatDayShort(e.startsAt).replace(/ \w+$/, "")}, ` : "";
+  const when = isMultiDay(e) ? `Daily to ${formatShortDate(e.endsAt)}` : `${day}${formatTime(e.startsAt)}`;
   return (
     <Link
       href={`/events/${e.slug}`}
-      onMouseEnter={() => onHover?.(e.id)}
-      onMouseLeave={() => onHover?.(null)}
-      onFocus={() => onHover?.(e.id)}
-      onBlur={() => onHover?.(null)}
+      // Only wire up hover when there's a map to highlight (also keeps the tile usable on server-rendered pages).
+      onMouseEnter={onHover && (() => onHover(e.id))}
+      onMouseLeave={onHover && (() => onHover(null))}
+      onFocus={onHover && (() => onHover(e.id))}
+      onBlur={onHover && (() => onHover(null))}
       className={[
         "flex min-h-[200px] flex-col justify-between gap-3 rounded-tile p-3.5 text-ink transition-transform hover:-translate-y-0.5",
         tileColour(e.id),
