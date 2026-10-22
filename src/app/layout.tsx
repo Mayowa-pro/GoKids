@@ -27,7 +27,7 @@ function Logo() {
       {stripes.map(([c, r]) => (
         <path key={c} d={`M${50 - r} 58 A${r} ${r} 0 0 1 ${50 + r} 58`} fill="none" stroke={c} strokeWidth="7.13" />
       ))}
-      <path transform="translate(50,49) scale(0.8)" d="M0 12 C-14 3 -15 -7 -10 -11 C-6 -14 -1 -12 0 -7 C1 -12 6 -14 10 -11 C15 -7 14 3 0 12Z" fill="#FF6B6B" />
+      <path transform="translate(50,54) scale(0.667)" d="M0 12 C-14 3 -15 -7 -10 -11 C-6 -14 -1 -12 0 -7 C1 -12 6 -14 10 -11 C15 -7 14 3 0 12Z" fill="#FF6B6B" />
     </svg>
   );
 }
