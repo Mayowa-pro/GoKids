@@ -119,10 +119,6 @@ export default function Home() {
         </div>
       </section>
 
-      <Suspense fallback={null}>
-        <ThisWeek />
-      </Suspense>
-
       <section className="mx-auto max-w-6xl px-4 pt-12">
         <h2 className="mb-4 font-display text-2xl font-bold">How it works</h2>
         <ol className="grid gap-3 md:grid-cols-3">
@@ -137,6 +133,10 @@ export default function Home() {
           ))}
         </ol>
       </section>
+
+      <Suspense fallback={null}>
+        <ThisWeek />
+      </Suspense>
 
       <section className="mx-auto max-w-6xl px-4 py-12">
         <div className="grid gap-3 md:grid-cols-2">
