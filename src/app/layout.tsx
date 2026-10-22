@@ -23,11 +23,11 @@ function Logo() {
     ["#5B9BFF", 21.05],
   ] as const;
   return (
-    <svg width="84" height="52" viewBox="2 8 96 60" aria-hidden="true">
+    <svg width="88" height="48" viewBox="2 10 96 52" aria-hidden="true">
       {stripes.map(([c, r]) => (
         <path key={c} d={`M${50 - r} 58 A${r} ${r} 0 0 1 ${50 + r} 58`} fill="none" stroke={c} strokeWidth="7.13" />
       ))}
-      <path transform="translate(50,53) scale(0.8)" d="M0 12 C-14 3 -15 -7 -10 -11 C-6 -14 -1 -12 0 -7 C1 -12 6 -14 10 -11 C15 -7 14 3 0 12Z" fill="#FF6B6B" />
+      <path transform="translate(50,49) scale(0.8)" d="M0 12 C-14 3 -15 -7 -10 -11 C-6 -14 -1 -12 0 -7 C1 -12 6 -14 10 -11 C15 -7 14 3 0 12Z" fill="#FF6B6B" />
     </svg>
   );
 }
@@ -41,11 +41,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <header className="sticky top-0 z-[1000] bg-surface">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3">
-            <Link href="/" aria-label={SITE.name} className="flex items-center gap-2 font-display font-bold">
+            <Link href="/" aria-label={SITE.name} className="flex items-end gap-2 font-display font-bold">
               <Logo />
-              <span className="flex flex-col leading-[0.85]">
-                <span className="text-xl text-coral">Little</span>
-                <span className="text-[28px] text-cobalt">Outings</span>
+              {/* "Outings" sits level with the bottom of the rainbow, with "Little" tucked just above it. */}
+              <span className="flex flex-col pb-0.5 leading-none">
+                <span className="-mb-1 text-lg text-coral">Little</span>
+                <span className="text-[25px] text-cobalt">Outings</span>
               </span>
             </Link>
             <nav className="ml-auto flex items-center gap-2 text-sm font-semibold">
