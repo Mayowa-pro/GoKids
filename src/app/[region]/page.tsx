@@ -119,7 +119,7 @@ async function Results({ region, searchParams }: { region: Region; searchParams:
 
         <section className="mt-6 flex flex-col items-start gap-2.5 rounded-tile bg-yolk p-5 text-yolk-ink sm:p-6">
           <h2 className="font-display text-2xl font-bold leading-tight">Run a club or class?</h2>
-          <p className="text-base">Put your kids&apos; event on GoKids for free.</p>
+          <p className="text-base">Put your kids&apos; event on Little Outings for free.</p>
           <Link href="/submit" className="flex min-h-11 items-center rounded-2xl bg-cobalt px-5 font-semibold text-white hover:opacity-90">
             Add your event
           </Link>

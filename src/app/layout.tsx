@@ -14,12 +14,20 @@ export const metadata: Metadata = {
   openGraph: { siteName: SITE.name, type: "website", locale: "en_GB" },
 };
 
+/** Rainbow with a heart underneath, as designed by Mayowa in the logo playground. */
 function Logo() {
+  const stripes = [
+    ["#FF6B6B", 42.44],
+    ["#FFD23F", 35.31],
+    ["#4CC9A0", 28.18],
+    ["#5B9BFF", 21.05],
+  ] as const;
   return (
-    <svg width="30" height="30" viewBox="0 0 34 34" aria-hidden="true">
-      <path d="M17 2c-6 0-11 4.6-11 10.5C6 20 17 32 17 32s11-12 11-19.5C28 6.6 23 2 17 2z" fill="var(--cobalt)" />
-      <circle cx="17" cy="12.5" r="4.5" fill="var(--yolk)" />
-      <circle cx="27" cy="6" r="3.5" fill="var(--coral)" />
+    <svg width="46" height="30" viewBox="2 8 96 60" aria-hidden="true">
+      {stripes.map(([c, r]) => (
+        <path key={c} d={`M${50 - r} 58 A${r} ${r} 0 0 1 ${50 + r} 58`} fill="none" stroke={c} strokeWidth="7.13" />
+      ))}
+      <path transform="translate(50,54) scale(0.667)" d="M0 12 C-14 3 -15 -7 -10 -11 C-6 -14 -1 -12 0 -7 C1 -12 6 -14 10 -11 C15 -7 14 3 0 12Z" fill="#FF6B6B" />
     </svg>
   );
 }
@@ -33,9 +41,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <header className="sticky top-0 z-[1000] bg-surface">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3">
-            <Link href="/" className="flex items-center gap-2 font-display text-2xl font-bold text-cobalt">
+            <Link href="/" aria-label={SITE.name} className="flex items-center gap-2 font-display font-bold">
               <Logo />
-              {SITE.name}
+              <span className="flex flex-col leading-[0.9]">
+                <span className="text-sm text-coral">Little</span>
+                <span className="text-2xl text-cobalt">Outings</span>
+              </span>
             </Link>
             <nav className="ml-auto flex items-center gap-2 text-sm font-semibold">
               <Link href="/for-organisers" className="hidden rounded-full px-3 py-2 hover:bg-cobalt-soft sm:inline-block">
