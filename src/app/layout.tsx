@@ -45,7 +45,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Logo />
               {/* "Outings" sits level with the bottom of the rainbow, with "Little" tucked just above it. */}
               <span className="flex flex-col pb-0.5 leading-none">
-                <span className="-mb-1 text-lg text-coral">Little</span>
+                <span className="-mb-1 text-[21px] text-coral">Little</span>
                 <span className="text-[25px] text-cobalt">Outings</span>
               </span>
             </Link>
