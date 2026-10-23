@@ -3,7 +3,7 @@
  * New regions (cities) are added to REGIONS; each has its own areas for the "Near" picker.
  */
 export const SITE = {
-  name: "Little Outings",
+  name: "My Little Outings",
   tagline: "Free and paid family events near you",
   description:
     "Every local kids' event in one map and feed, free for parents. Starting in Stoke-on-Trent, coming to the rest of the Midlands.",

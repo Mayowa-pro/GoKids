@@ -148,7 +148,7 @@ export default function Home() {
           </Link>
           <div className="flex flex-col items-start gap-2.5 rounded-tile bg-yolk p-6 text-yolk-ink">
             <h2 className="font-display text-2xl font-bold leading-tight">Run a club or class?</h2>
-            <p>Put your kids&apos; event on Little Outings for free, and parents nearby will find it.</p>
+            <p>Put your kids&apos; event on My Little Outings for free, and parents nearby will find it.</p>
             <Link href="/submit" className="flex min-h-11 items-center rounded-2xl bg-cobalt px-5 font-semibold text-white hover:opacity-90">
               Add your event
             </Link>

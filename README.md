@@ -1,4 +1,4 @@
-# Little Outings
+# My Little Outings
 
 Every kids' event near you, on one map. A hyper-local platform that gathers free and paid family events into one clean feed and map, so parents stop jumping between Facebook groups, Instagram pages and council websites.
 
