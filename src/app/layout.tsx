@@ -23,7 +23,7 @@ function Logo() {
     ["#5B9BFF", 21.05],
   ] as const;
   return (
-    <svg width="88" height="48" viewBox="2 10 96 52" aria-hidden="true">
+    <svg width="100" height="54" viewBox="2 10 96 52" aria-hidden="true">
       {stripes.map(([c, r]) => (
         <path key={c} d={`M${50 - r} 58 A${r} ${r} 0 0 1 ${50 + r} 58`} fill="none" stroke={c} strokeWidth="7.13" />
       ))}
