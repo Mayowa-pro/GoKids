@@ -43,13 +43,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3">
             <Link href="/" aria-label={SITE.name} className="flex items-end gap-2 font-display font-bold">
               <Logo />
-              {/* "Outings" sits level with the bottom of the rainbow, with "My Little" tucked just above it. */}
+              {/* Three lines, with "Outings" level with the bottom of the rainbow. */}
               <span className="flex flex-col pb-0.5 leading-none">
-                <span className="-mb-1 flex items-center gap-1 text-[21px] text-coral">
-                  <span className="rounded-full bg-cobalt px-1.5 pb-1 pt-[3px] text-xs text-white">My</span>
-                  Little
-                </span>
-                <span className="text-[25px] text-cobalt">Outings</span>
+                <span className="text-[13.5px] leading-none text-cobalt">My</span>
+                <span className="-mt-0.5 text-[19px] leading-none text-coral">Little</span>
+                <span className="-mt-[3px] text-[24px] leading-none text-cobalt">Outings</span>
               </span>
             </Link>
             <nav className="ml-auto flex items-center gap-2 text-sm font-semibold">
