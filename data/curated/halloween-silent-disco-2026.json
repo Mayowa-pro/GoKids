@@ -1,0 +1,35 @@
+[
+  {
+    "title": "Halloween Silent Disco",
+    "category": "Performing arts",
+    "isFree": true,
+    "minAge": 5,
+    "maxAge": 12,
+    "organiser": "Stoke-on-Trent Libraries",
+    "sourceUrl": "https://www.instagram.com/sotlibraries/",
+    "area": "longton",
+    "venue": "Longton Library",
+    "postcode": "ST3 4HY",
+    "date": "2026-10-27",
+    "start": "14:00",
+    "end": "14:30",
+    "description": "A spooky half-term silent disco for children aged 5 and over: dance to the music on wireless headphones. Booking required, so call Longton Library on 01782 238424 to book a place."
+  },
+  {
+    "title": "Halloween Silent Disco",
+    "category": "Performing arts",
+    "isFree": true,
+    "minAge": 5,
+    "maxAge": 12,
+    "organiser": "Stoke-on-Trent Libraries",
+    "sourceUrl": "https://www.instagram.com/sotlibraries/",
+    "area": "stoke",
+    "venue": "Stoke Library",
+    "postcode": "ST4 4SZ",
+    "date": "2026-10-29",
+    "start": "10:00",
+    "end": "14:30",
+    "description": "A spooky half-term silent disco for children aged 5 and over: dance to the music on wireless headphones. Booking required, so call Stoke Library on 01782 238446 to book a place.",
+    "timesNote": "Two sessions: 10–10:30am and 2–2:30pm"
+  }
+]
