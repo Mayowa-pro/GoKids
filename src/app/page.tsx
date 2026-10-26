@@ -1,10 +1,22 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { EventTile, tileColour } from "@/components/EventTile";
 import { listEvents, type PublicEvent } from "@/db/queries";
-import { LIVE_REGIONS } from "@/lib/site";
+import { LIVE_REGIONS, SITE } from "@/lib/site";
 import { formatDayShort, formatTime, isMultiDay, londonDateKey } from "@/lib/time";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
+
+/** Tells search engines the site's name, so Google shows "My Little Outings" rather than the web address. */
+const siteJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "WebSite", name: SITE.name, url: SITE.url, inLanguage: "en-GB" },
+    { "@type": "Organization", name: SITE.name, url: SITE.url, logo: `${SITE.url}/icon.svg`, email: SITE.email, areaServed: "Stoke-on-Trent" },
+  ],
+};
 
 const region = LIVE_REGIONS[0];
 const areaName = (slug: string) => region.areas.find((a) => a.slug === slug)?.name ?? slug;
@@ -94,6 +106,7 @@ const STEPS = [
 export default function Home() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd).replace(/</g, "\\u003c") }} />
       <section className="relative overflow-hidden rounded-b-[32px] bg-hero text-hero-ink">
         <div aria-hidden="true" className="absolute -right-16 -top-16 size-56 rounded-full bg-coral" />
         <div aria-hidden="true" className="absolute bottom-10 left-[46%] size-12 rounded-full bg-yolk max-lg:hidden" />
@@ -101,7 +114,7 @@ export default function Home() {
           <div>
             <h1 className="max-w-[16ch] font-display text-[40px] font-bold leading-[1.02] sm:text-6xl">Plan a fun day out with the kids</h1>
             <p className="mt-4 max-w-[52ch] text-lg">
-              Story times, swimming, half-term trails and more, all in one place. Pick who&apos;s coming and a day, and we&apos;ll show you
+              Story times, swimming, half-term trails and more across Stoke-on-Trent, all in one place. Pick who&apos;s coming and a day, and we&apos;ll show you
               what&apos;s on. Always free for parents.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
