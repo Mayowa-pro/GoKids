@@ -1,0 +1,20 @@
+[
+  {
+    "minAge": 0,
+    "maxAge": 12,
+    "isFree": false,
+    "priceText": "£5 per person",
+    "adultPrice": "£5",
+    "area": "longton",
+    "venue": "The Blurton Club",
+    "postcode": "ST3 4BT",
+    "organiser": "Sparkle Surprize Entertainment",
+    "title": "Sparkle Surprize Halloween Spooktacular",
+    "category": "Play",
+    "date": "2026-10-27",
+    "start": "14:00",
+    "end": "16:00",
+    "description": "A Halloween party with Sparkle Surprize at The Blurton Club, 136 Drubbery Lane. Halloween-themed games and prizes for the best fancy dress, so come dressed up. £5 per person: buy tickets at the club bar, or pay on the door (cash preferred). For more information, email the organisers at sparklesurprizeentertains23@gmail.com.",
+    "sourceUrl": "https://www.google.com/maps/search/?api=1&query=The+Blurton+Club+136+Drubbery+Lane+Stoke-on-Trent+ST3+4BT"
+  }
+]
