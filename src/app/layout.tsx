@@ -39,6 +39,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-surface focus:px-3 focus:py-2">
           Skip to content
         </a>
+        {/* Remove this strip when the site is finished. */}
+        <p className="bg-yolk px-4 py-1.5 text-center text-[13px] font-semibold text-yolk-ink">
+          🚧 We&apos;re still building {SITE.name}, so some things may change. Thanks for visiting early!
+        </p>
         <header className="sticky top-0 z-[1000] bg-surface">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3">
             <Link href="/" aria-label={SITE.name} className="flex items-end gap-2 font-display font-bold">
