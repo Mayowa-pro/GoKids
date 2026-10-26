@@ -88,7 +88,7 @@ export function CookieBanner({ gaId }: { gaId: string }) {
       <div className="rounded-2xl border border-line bg-surface p-5 shadow-[0_8px_30px_rgba(40,20,90,0.18)]">
         <p className="font-display text-lg font-semibold">Can we count your visit? 🍪</p>
         <p className="mt-1.5 text-sm text-muted">
-          With your OK we use Google Analytics cookies to see which pages families find useful. No adverts, ever.{" "}
+          With your OK we use Google Analytics cookies to see which pages families find useful. We don&apos;t use them for advertising.{" "}
           <Link href="/privacy" className="font-semibold text-cobalt underline">More about cookies</Link>
         </p>
         <div className="mt-4 grid grid-cols-2 gap-2">
