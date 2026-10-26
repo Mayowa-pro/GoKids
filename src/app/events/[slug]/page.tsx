@@ -14,17 +14,10 @@ export async function generateMetadata({ params }: PageProps<"/events/[slug]">):
   await connection();
   const e = await getEventBySlug((await params).slug);
   if (!e) return { title: "Event not found" };
-  const region = getRegion(e.region);
-  const when = isMultiDay(e) ? `${formatLongDate(e.startsAt)} to ${formatLongDate(e.endsAt)}` : formatLongDate(e.startsAt);
-  const price = e.isFree ? "Free" : (e.priceText ?? "Paid");
-  const summary = `${when} at ${e.venue}, ${region?.name ?? ""}. ${price}, ages ${e.minAge} to ${e.maxAge}.`;
-  const description = `${summary} ${e.description}`.slice(0, 158).replace(/\s+\S*$/, "") + "…";
   return {
     title: `${e.title} at ${e.venue}`,
-    description,
+    description: e.description.slice(0, 160),
     alternates: { canonical: `/events/${e.slug}` },
-    openGraph: { title: e.title, description: summary, type: "article", url: `/events/${e.slug}` },
-    robots: e.isSample ? { index: false } : undefined,
   };
 }
 
@@ -55,15 +48,7 @@ async function EventDetail({ params }: { params: PageProps<"/events/[slug]">["pa
       address: { "@type": "PostalAddress", postalCode: e.postcode ?? undefined, addressLocality: areaName, addressRegion: region?.name, addressCountry: "GB" },
       geo: { "@type": "GeoCoordinates", latitude: e.lat, longitude: e.lng },
     },
-    organizer: { "@type": "Organization", name: e.organiser, url: e.bookingUrl ?? undefined },
-    image: [`${SITE.url}/events/${e.slug}/opengraph-image`],
-    offers: {
-      "@type": "Offer",
-      price: e.isFree ? 0 : e.priceFrom != null ? (e.priceFrom / 100).toFixed(2) : undefined,
-      priceCurrency: "GBP",
-      url: e.bookingUrl ?? `${SITE.url}/events/${e.slug}`,
-      availability: "https://schema.org/InStock",
-    },
+    organizer: { "@type": "Organization", name: e.organiser },
     url: `${SITE.url}/events/${e.slug}`,
   };
 

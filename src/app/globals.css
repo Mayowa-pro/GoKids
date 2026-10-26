@@ -101,7 +101,3 @@ h1, h2, h3 { text-wrap: balance; }
 
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
-
-/* Text pages (About, Contact, Privacy) */
-.prose-page a { color: var(--cobalt); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
-.prose-page ul { list-style: disc; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem; }

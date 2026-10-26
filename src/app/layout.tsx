@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Fredoka, Nunito } from "next/font/google";
 import Link from "next/link";
-import { CookieBanner, CookieSettingsButton } from "@/components/CookieBanner";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 
@@ -10,22 +9,9 @@ const body = Nunito({ variable: "--font-body", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
-  title: { default: `${SITE.name}: kids' events and family days out in Stoke-on-Trent`, template: `%s · ${SITE.name}` },
+  title: { default: `${SITE.name}: ${SITE.tagline}`, template: `%s · ${SITE.name}` },
   description: SITE.description,
-  applicationName: SITE.name,
-  keywords: [
-    "things to do with kids Stoke-on-Trent",
-    "family events Stoke-on-Trent",
-    "kids activities Stoke",
-    "free things to do with kids Stoke",
-    "baby and toddler groups Stoke-on-Trent",
-    "half term activities Stoke-on-Trent",
-    "Staffordshire family days out",
-  ],
   openGraph: { siteName: SITE.name, type: "website", locale: "en_GB" },
-  twitter: { card: "summary_large_image" },
-  // Optional: a Google Search Console code, if verifying with a meta tag instead of GoDaddy.
-  verification: process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : undefined,
 };
 
 /** Rainbow with a heart underneath, as designed by Mayowa in the logo playground. */
@@ -84,14 +70,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <span>© {SITE.name}. Always free for parents.</span>
             <Link href="/for-organisers" className="hover:text-ink">Boost your event</Link>
             <Link href="/submit" className="hover:text-ink">List an event</Link>
-            <Link href="/about" className="hover:text-ink">About</Link>
-            <Link href="/contact" className="hover:text-ink">Contact</Link>
-            <Link href="/privacy" className="hover:text-ink">Privacy and cookies</Link>
-            {SITE.gaId && <CookieSettingsButton className="hover:text-ink" />}
             <Link href="/admin" className="hover:text-ink">Moderation</Link>
           </div>
         </footer>
-        <CookieBanner gaId={SITE.gaId} />
       </body>
     </html>
   );
