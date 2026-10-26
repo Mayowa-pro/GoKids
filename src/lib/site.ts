@@ -6,12 +6,16 @@ export const SITE = {
   name: "My Little Outings",
   tagline: "Free and paid family events near you",
   description:
-    "Every local kids' event in one map and feed, free for parents. Starting in Stoke-on-Trent, coming to the rest of the Midlands.",
+    "Things to do with kids in Stoke-on-Trent: baby groups, library sessions, holiday crafts, shows and family days out, free and paid, in one map and feed. Always free for parents.",
   // The live site uses www.mylittleoutings.co.uk (the address without www redirects there). Previews use their own address.
   url:
     process.env.NEXT_PUBLIC_SITE_URL ??
     (process.env.VERCEL_ENV === "production" ? "https://www.mylittleoutings.co.uk" : undefined) ??
     (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000"),
+  /** Shown on the Contact and Privacy pages. */
+  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "hello@mylittleoutings.co.uk",
+  /** Google Analytics ID (starts with G-). Empty means no analytics and no cookie banner. */
+  gaId: process.env.NEXT_PUBLIC_GA_ID ?? "G-NT65LLKXK2",
 } as const;
 
 export type Area = { slug: string; name: string; lat: number; lng: number };
