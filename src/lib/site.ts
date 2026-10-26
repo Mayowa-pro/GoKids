@@ -7,9 +7,10 @@ export const SITE = {
   tagline: "Free and paid family events near you",
   description:
     "Every local kids' event in one map and feed, free for parents. Starting in Stoke-on-Trent, coming to the rest of the Midlands.",
-  // On Vercel the live address (www.mylittleoutings.co.uk, set as the main domain) is filled in automatically.
+  // The live site uses www.mylittleoutings.co.uk (the address without www redirects there). Previews use their own address.
   url:
     process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.VERCEL_ENV === "production" ? "https://www.mylittleoutings.co.uk" : undefined) ??
     (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000"),
 } as const;
 
