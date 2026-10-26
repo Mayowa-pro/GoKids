@@ -63,6 +63,10 @@ describe("budget", () => {
     const f = parseFilters({ max: "10" });
     expect(f.max).toBe(10);
     expect(toSearch(f)).toBe("?max=10");
-    expect(parseFilters({ max: "7" }).max).toBeUndefined();
+    expect(parseFilters({ max: "7" }).max).toBe(7);
+    expect(parseFilters({ max: "0" }).max).toBeUndefined();
+    expect(parseFilters({ max: "50" }).max).toBeUndefined();
+    expect(parseFilters({ max: "7.5" }).max).toBeUndefined();
+    expect(parseFilters({ max: "abc" }).max).toBeUndefined();
   });
 });

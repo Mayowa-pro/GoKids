@@ -8,14 +8,6 @@ export function priceFromText(isFree: boolean, text: string | null | undefined):
   return amounts.length ? Math.min(...amounts) : null;
 }
 
-export const BUDGET_OPTIONS = [
-  { value: "", label: "Any price" },
-  { value: "free", label: "Free only" },
-  { value: "5", label: "Up to £5" },
-  { value: "10", label: "Up to £10" },
-  { value: "20", label: "Up to £20" },
-] as const;
-
 /** Short label for what adults pay, for tiles and event pages. Null when we don't know. */
 export function adultLabel(adultPrice: string | null | undefined): string | null {
   if (!adultPrice) return null;

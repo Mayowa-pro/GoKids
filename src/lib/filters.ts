@@ -50,7 +50,7 @@ export function parseFilters(params: RawParams, now = new Date()): EventFilters 
     date,
     age: AGE_OPTIONS.some((o) => o.value === age) ? (age as AgeBand) : "all",
     free: first(params.free) === "1",
-    max: ["5", "10", "20"].includes(first(params.max) ?? "") ? Number(first(params.max)) : undefined,
+    max: parseMax(first(params.max)),
     q: (first(params.q) ?? "").trim().slice(0, 80),
     near: first(params.near) || undefined,
   };
@@ -85,6 +85,16 @@ export function dateWindow(when: When, now: Date, date?: string): { from: Date; 
 export function ageRange(age: AgeBand): { min: number; max: number } {
   const o = AGE_OPTIONS.find((a) => a.value === age)!;
   return { min: o.min, max: o.max };
+}
+
+/** Highest amount on the budget slider; the far end means "any price". */
+export const BUDGET_SLIDER_MAX = 50;
+
+/** A whole-pound budget between £1 and £49 from the address, or undefined. */
+function parseMax(v: string | undefined): number | undefined {
+  if (!v || !/^\d{1,2}$/.test(v)) return undefined;
+  const n = Number(v);
+  return n >= 1 && n < BUDGET_SLIDER_MAX ? n : undefined;
 }
 
 /** Build a query string, dropping defaults so URLs stay short and shareable. */

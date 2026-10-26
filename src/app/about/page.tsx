@@ -23,7 +23,7 @@ export default function AboutPage() {
       </p>
       <ul>
         <li>See what&apos;s on today, this weekend or on any date you choose.</li>
-        <li>Filter by your child&apos;s age and your budget, from free up to £20.</li>
+        <li>Filter by your child&apos;s age, and slide to set your budget, from free upwards.</li>
         <li>Type your postcode to see what&apos;s closest to you on the map.</li>
       </ul>
 

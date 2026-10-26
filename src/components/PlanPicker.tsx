@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
-import { AGE_OPTIONS, DAY_STRIP_DAYS, toSearch, type EventFilters } from "@/lib/filters";
-import { BUDGET_OPTIONS } from "@/lib/price";
+import { AGE_OPTIONS, BUDGET_SLIDER_MAX, DAY_STRIP_DAYS, toSearch, type EventFilters } from "@/lib/filters";
 import type { Area } from "@/lib/site";
 import { addDays, londonMidnight } from "@/lib/time";
 
@@ -110,24 +109,7 @@ export function SearchRow({ filters, areas }: { filters: EventFilters; areas: Ar
           autoComplete="off"
         />
       </label>
-      <label className="flex min-h-11 items-center gap-2 rounded-2xl bg-cobalt-soft pl-3.5 pr-1.5 text-[15px] font-semibold">
-        Budget
-        <select
-          id="budget"
-          value={filters.free ? "free" : filters.max ? String(filters.max) : ""}
-          onChange={(e) => {
-            const v = e.target.value;
-            router.replace(href({ free: v === "free", max: v === "free" || !v ? undefined : Number(v) }), { scroll: false });
-          }}
-          className={`rounded-xl px-2 py-1.5 ${filters.free || filters.max ? "bg-yolk text-yolk-ink" : "bg-surface"}`}
-        >
-          {BUDGET_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
-          ))}
-        </select>
-      </label>
+      <BudgetSlider filters={filters} onChange={(patch) => startTransition(() => router.replace(href(patch), { scroll: false }))} />
       <label className="flex min-h-11 items-center gap-2 rounded-2xl bg-cobalt-soft pl-3.5 pr-1.5 text-[15px] font-semibold">
         Near
         <select
@@ -145,5 +127,52 @@ export function SearchRow({ filters, areas }: { filters: EventFilters; areas: Ar
         </select>
       </label>
     </div>
+  );
+}
+
+function budgetLabel(v: number) {
+  if (v <= 0) return "Free only";
+  if (v >= BUDGET_SLIDER_MAX) return "Any price";
+  return `Up to £${v}`;
+}
+
+/** Drag to set the most you want to pay per child: £0 means free only, the far end means any price. */
+function BudgetSlider({ filters, onChange }: { filters: EventFilters; onChange: (patch: Partial<EventFilters>) => void }) {
+  const current = filters.free ? 0 : (filters.max ?? BUDGET_SLIDER_MAX);
+  const [value, setValue] = useState(current);
+  // Follow the address when it changes from elsewhere (back button, a shared link).
+  const [seen, setSeen] = useState(current);
+  if (seen !== current) {
+    setSeen(current);
+    setValue(current);
+  }
+
+  // Update the list a moment after the slider stops moving.
+  useEffect(() => {
+    if (value === current) return;
+    const t = setTimeout(
+      () => onChange(value <= 0 ? { free: true, max: undefined } : value >= BUDGET_SLIDER_MAX ? { free: false, max: undefined } : { free: false, max: value }),
+      350,
+    );
+    return () => clearTimeout(t);
+  }, [value, current, onChange]);
+
+  const set = value < BUDGET_SLIDER_MAX;
+  return (
+    <label className="flex min-h-11 min-w-0 flex-[1_1_240px] items-center gap-3 rounded-2xl bg-cobalt-soft px-3.5 py-1.5 text-[15px] font-semibold">
+      <span className="shrink-0">Budget</span>
+      <input
+        id="budget"
+        type="range"
+        min={0}
+        max={BUDGET_SLIDER_MAX}
+        step={1}
+        value={value}
+        onChange={(e) => setValue(Number(e.target.value))}
+        aria-valuetext={budgetLabel(value)}
+        className="min-w-0 flex-1 accent-cobalt"
+      />
+      <span className={`shrink-0 rounded-xl px-2 py-1 text-sm tabular-nums ${set ? "bg-yolk text-yolk-ink" : "bg-surface"}`}>{budgetLabel(value)}</span>
+    </label>
   );
 }
