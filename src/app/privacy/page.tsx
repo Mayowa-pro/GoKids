@@ -17,7 +17,7 @@ export default function PrivacyPage() {
     <ProsePage label="Privacy" title="Privacy and cookies" intro={`We collect as little as we can. This page explains what, why, and what you can do about it. Last updated ${UPDATED}.`}>
       <H2>Who we are</H2>
       <p>
-        {SITE.name} ({SITE.url.replace(/^https?:\/\//, "")}) is a website listing family events and days out. We are the
+        {SITE.name} ({SITE.url.replace(/^https?:\/\//, "")}) is a local listings website for family events. We are the
         &ldquo;controller&rdquo; of the personal information described here under UK data protection law (UK GDPR and the
         Data Protection Act 2018). You can reach us at <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
       </p>
@@ -56,14 +56,6 @@ export default function PrivacyPage() {
       <p>
         Some events come from public pages such as council, library and venue websites. We show the organiser&apos;s name
         and public booking links only. If you&apos;d like a listing changed or removed, email us.
-      </p>
-
-      <H2>Affiliate links</H2>
-      <p>
-        Some links on our site are affiliate links. If you click one and book, the company you book with (or the
-        affiliate network working for them, such as Awin) may set its own cookies on its website so we can be paid a small
-        commission. We don&apos;t receive your name or payment details. Those cookies are covered by that company&apos;s own
-        privacy policy.
       </p>
 
       <H2>Cookies</H2>

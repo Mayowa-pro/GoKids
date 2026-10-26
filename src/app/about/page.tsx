@@ -39,15 +39,10 @@ export default function AboutPage() {
         You never pay to use {SITE.name} and you don&apos;t need an account. Organisers can list events for free too, and
         can pay a small fee to have theirs featured. Featured events are always marked with a ★.
       </p>
-      <p>
-        Some links to bigger days out and attractions further afield are affiliate links. If you book through one, we may
-        earn a small commission. It never costs you anything extra, and it helps keep {SITE.name} free.
-      </p>
 
       <H2>Starting in Stoke-on-Trent</H2>
       <p>
-        Our local listings start in the Potteries, and we plan to add more towns across the Midlands. We also share
-        ideas for family days out further from home. If you run something for
+        We&apos;re starting in the Potteries and plan to add more towns across the Midlands. If you run something for
         families, <Link href="/submit">add your event</Link>. If you spot a mistake or something we&apos;ve missed,{" "}
         <Link href="/contact">tell us</Link>.
       </p>
