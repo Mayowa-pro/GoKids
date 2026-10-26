@@ -22,7 +22,7 @@
     "minAge": 0,
     "maxAge": 16,
     "isFree": false,
-    "priceText": "See website",
+    "priceText": "From £9.99",
     "area": "trentham",
     "venue": "Trentham Estate",
     "postcode": "ST4 8JG",
@@ -33,8 +33,9 @@
     "endDate": "2026-11-01",
     "start": "12:00",
     "end": "20:00",
-    "description": "A Halloween circus under the Big Top at Trentham, with thrill acts and spooky (family-friendly) entertainment. Check the circus website for show times and tickets.",
-    "sourceUrl": "https://www.visitstoke.co.uk/whats-on/gandeys-halloween-spooktacular-trentham-p2641141"
+    "description": "A Halloween circus under the Big Top at Trentham, with thrill acts and spooky (family-friendly) entertainment. Tickets from £9.99; check the circus website for show times.",
+    "sourceUrl": "https://www.visitstoke.co.uk/whats-on/gandeys-halloween-spooktacular-trentham-p2641141",
+    "priceFrom": 9.99
   },
   {
     "minAge": 0,
@@ -105,23 +106,6 @@
     "end": "13:30",
     "description": "A hands-on parent-and-child circus skills session: plate spinning, diabolo, scarf juggling and tightrope balancing. Beginners welcome.",
     "sourceUrl": "https://mitchellartscentre.co.uk/circus-in-a-box"
-  },
-  {
-    "minAge": 0,
-    "maxAge": 16,
-    "isFree": false,
-    "priceText": "See website",
-    "area": "hanley",
-    "venue": "Mitchell Arts Centre",
-    "postcode": "ST1 4HG",
-    "organiser": "Mitchell Arts Centre",
-    "title": "K-Pop Party",
-    "category": "Play",
-    "date": "2026-10-27",
-    "start": "10:00",
-    "end": "11:30",
-    "description": "A K-Pop themed dance party for children, run by Wish Upon A Princess Parties as part of the MAC's half-term Time Travel Fest.",
-    "sourceUrl": "https://mitchellartscentre.co.uk/k-pop-party-with-wish-upon-a-princess-parties"
   },
   {
     "minAge": 0,

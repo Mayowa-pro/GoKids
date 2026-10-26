@@ -1,0 +1,19 @@
+[
+  {
+    "minAge": 0,
+    "maxAge": 16,
+    "isFree": false,
+    "priceText": "Sold out",
+    "area": "hanley",
+    "venue": "Mitchell Arts Centre",
+    "postcode": "ST1 4HG",
+    "organiser": "Mitchell Arts Centre",
+    "title": "K-Pop Party",
+    "category": "Play",
+    "date": "2026-10-27",
+    "start": "10:00",
+    "end": "11:30",
+    "description": "SOLD OUT. A K-Pop themed dance party for children, run by Wish Upon A Princess Parties as part of the MAC's half-term Time Travel Fest. Tickets have all gone, but the MAC sometimes has returns, so it's worth checking their website.",
+    "sourceUrl": "https://mitchellartscentre.co.uk/k-pop-party-with-wish-upon-a-princess-parties"
+  }
+]

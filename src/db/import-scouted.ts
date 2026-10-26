@@ -69,9 +69,10 @@ export async function importScouted(dir = DIR, origin: "scout" | "curated" = "sc
       const finished = e.repeatsWeekly ? !!repeatUntil && repeatUntil < new Date() : endsAt < new Date();
       if (finished) { skipped++; continue; }
 
-      const [existing] = await db.select({ id: events.id }).from(events).where(eq(events.slug, slug)).limit(1);
-      if (existing && origin === "scout") { skipped++; continue; }
-      if (origin === "scout") {
+      const [existing] = await db.select({ id: events.id, status: events.status }).from(events).where(eq(events.slug, slug)).limit(1);
+      // Scouted events already approved or turned down are left alone; ones still waiting pick up corrections below.
+      if (existing && origin === "scout" && existing.status !== "pending") { skipped++; continue; }
+      if (origin === "scout" && !existing) {
         // Skip anything already listed (or already turned down), even under a different address.
         const candidate = { id: -1, title: e.title, venue: e.venue, startsAt: at(e.date, e.start), endsAt, repeatsWeekly: !!e.repeatsWeekly };
         if (known.some((k) => covers(k, candidate) || covers(candidate, k))) { skipped++; continue; }
@@ -112,6 +113,7 @@ export async function importScouted(dir = DIR, origin: "scout" | "curated" = "sc
       };
       if (existing) {
         // Curated files are the source of truth, so keep the live listing in step with them.
+        // The same goes for scouted events still waiting for approval, so fixes to a batch show up at /admin.
         await db.update(events).set(values).where(eq(events.id, existing.id));
         skipped++;
         continue;
