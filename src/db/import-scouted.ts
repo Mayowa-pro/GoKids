@@ -10,7 +10,7 @@ import { geocodePostcode } from "../lib/postcode";
 import { LIVE_REGIONS } from "../lib/site";
 import { slugify } from "../lib/slug";
 import { covers } from "../lib/dedupe";
-import { priceFromText } from "../lib/price";
+import { defaultAdultPrice, priceFromText } from "../lib/price";
 import { londonMidnight, weekday } from "../lib/time";
 import { scoutedEventSchema } from "../lib/validation";
 import { db } from "./index";
@@ -69,9 +69,15 @@ export async function importScouted(dir = DIR, origin: "scout" | "curated" = "sc
       const finished = e.repeatsWeekly ? !!repeatUntil && repeatUntil < new Date() : endsAt < new Date();
       if (finished) { skipped++; continue; }
 
-      const [existing] = await db.select({ id: events.id, status: events.status }).from(events).where(eq(events.slug, slug)).limit(1);
-      // Scouted events already approved or turned down are left alone; ones still waiting pick up corrections below.
-      if (existing && origin === "scout" && existing.status !== "pending") { skipped++; continue; }
+      const [existing] = await db.select({ id: events.id, status: events.status, adultPrice: events.adultPrice }).from(events).where(eq(events.slug, slug)).limit(1);
+      const adultPrice = defaultAdultPrice(e.isFree, e.adultPrice);
+      // Scouted events already approved or turned down are left alone (apart from filling in a missing adult price);
+      // ones still waiting pick up corrections below.
+      if (existing && origin === "scout" && existing.status !== "pending") {
+        if (adultPrice && !existing.adultPrice) await db.update(events).set({ adultPrice }).where(eq(events.id, existing.id));
+        skipped++;
+        continue;
+      }
       if (origin === "scout" && !existing) {
         // Skip anything already listed (or already turned down), even under a different address.
         const candidate = { id: -1, title: e.title, venue: e.venue, startsAt: at(e.date, e.start), endsAt, repeatsWeekly: !!e.repeatsWeekly };
@@ -103,6 +109,7 @@ export async function importScouted(dir = DIR, origin: "scout" | "curated" = "sc
         isFree: e.isFree,
         priceText: e.isFree ? null : (e.priceText ?? "See website"),
         priceFrom: e.priceFrom !== undefined ? Math.round(e.priceFrom * 100) : priceFromText(e.isFree, e.priceText),
+        adultPrice,
         minAge: e.minAge,
         maxAge: e.maxAge,
         organiser: e.organiser,

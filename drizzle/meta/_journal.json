@@ -36,6 +36,13 @@
       "when": 1792671723671,
       "tag": "0004_price_from",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1793018153825,
+      "tag": "0005_adult_price",
+      "breakpoints": true
     }
   ]
 }

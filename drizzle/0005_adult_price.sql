@@ -1,0 +1,1 @@
+ALTER TABLE `events` ADD `adult_price` text;

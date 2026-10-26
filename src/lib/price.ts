@@ -15,3 +15,16 @@ export const BUDGET_OPTIONS = [
   { value: "10", label: "Up to £10" },
   { value: "20", label: "Up to £20" },
 ] as const;
+
+/** Short label for what adults pay, for tiles and event pages. Null when we don't know. */
+export function adultLabel(adultPrice: string | null | undefined): string | null {
+  if (!adultPrice) return null;
+  if (/^free$/i.test(adultPrice)) return "Adults free";
+  if (/^[£\d]/.test(adultPrice)) return `Adults ${adultPrice}`;
+  return adultPrice;
+}
+
+/** Free events are free for the grown-ups too, unless the listing says otherwise. */
+export function defaultAdultPrice(isFree: boolean, given: string | null | undefined): string | null {
+  return given?.trim() || (isFree ? "Free" : null);
+}

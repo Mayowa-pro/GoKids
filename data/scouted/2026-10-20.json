@@ -37,7 +37,8 @@
     "sourceUrl": "https://www.visitstoke.co.uk/whats-on/kids-halloween-ghost-trail-p2659931",
     "bookingUrl": "https://re-form.org/heritage-buildings/middleport-pottery/whats-on/",
     "endDate": "2026-11-01",
-    "timesNote": "Every day, 10am–3pm"
+    "timesNote": "Every day, 10am–3pm",
+    "adultPrice": "Free"
   },
   {
     "title": "Creepy Creatures",
@@ -91,7 +92,8 @@
     "maxAge": 15,
     "organiser": "Dimensions Leisure Centre",
     "sourceUrl": "https://www.visitstoke.co.uk/whats-on/blood-pool-party-p2661801",
-    "timesNote": "Two sessions: 5:30–7pm and 7:30–9pm"
+    "timesNote": "Two sessions: 5:30–7pm and 7:30–9pm",
+    "adultPrice": "£12.50"
   },
   {
     "title": "Halloween Blood Pool Party",
@@ -109,6 +111,7 @@
     "maxAge": 15,
     "organiser": "Dimensions Leisure Centre",
     "sourceUrl": "https://www.visitstoke.co.uk/whats-on/blood-pool-party-p2661801",
-    "timesNote": "Two sessions: 5:30–7pm and 7:30–9pm"
+    "timesNote": "Two sessions: 5:30–7pm and 7:30–9pm",
+    "adultPrice": "£12.50"
   }
 ]

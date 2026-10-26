@@ -126,6 +126,11 @@ function Form({ areas, onReset }: { areas: Area[]; onReset: () => void }) {
             <input {...a("priceText")} className={input} placeholder="£5 per child (cheapest price first)" maxLength={40} />
           </Field>
         )}
+        {!isFree && (
+          <Field id="adultPrice" label="What do adults pay? (optional)" error={err.adultPrice}>
+            <input {...a("adultPrice")} className={input} placeholder="Free, £4, or one adult free" maxLength={40} />
+          </Field>
+        )}
       </fieldset>
 
       <div className="grid grid-cols-2 gap-5">

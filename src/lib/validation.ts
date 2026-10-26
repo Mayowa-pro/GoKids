@@ -22,6 +22,7 @@ export const submissionSchema = z
     end: time,
     isFree: z.enum(["yes", "no"]).transform((v) => v === "yes"),
     priceText: z.string().trim().max(40).optional().default(""),
+    adultPrice: z.string().trim().max(40).optional().default(""),
     minAge: z.coerce.number().int().min(0).max(17),
     maxAge: z.coerce.number().int().min(0).max(17),
     organiser: z.string().trim().min(2, "Who runs it?").max(80),
@@ -81,6 +82,8 @@ export const scoutedEventSchema = z
     priceText: z.string().trim().max(40).optional(),
     /** Cheapest ticket in pounds, when the wording doesn't make it clear. */
     priceFrom: z.number().min(0).max(500).optional(),
+    /** What adults pay: "Free", "£4", or a short phrase like "One adult free". Leave out if unknown. */
+    adultPrice: z.string().trim().max(40).optional(),
     minAge: z.number().int().min(0).max(17),
     maxAge: z.number().int().min(0).max(17),
     organiser: z.string().trim().min(2).max(80),

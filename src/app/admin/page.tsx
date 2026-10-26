@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { PriceBadge } from "@/components/PriceBadge";
+import { adultLabel } from "@/lib/price";
 import { listByStatus } from "@/db/queries";
 import type { EventRow } from "@/db/schema";
 import { adminEnabled, isAdmin } from "@/lib/auth";
@@ -43,7 +44,10 @@ function Row({ e, mode }: { e: EventRow; mode: "pending" | "approved" }) {
             {e.contactEmail && <> · <span className="select-all">{e.contactEmail}</span></>}
           </p>
         </div>
-        <PriceBadge isFree={e.isFree} priceText={e.priceText} />
+        <div className="flex flex-col items-end gap-1">
+          <PriceBadge isFree={e.isFree} priceText={e.priceText} />
+          <span className="text-xs font-semibold text-muted">{adultLabel(e.adultPrice) ?? "Adult price not known"}</span>
+        </div>
       </div>
       {mode === "pending" && <p className="max-w-[70ch] text-sm">{e.description}</p>}
       {e.sourceUrl && (

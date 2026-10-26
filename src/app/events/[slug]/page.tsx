@@ -108,6 +108,8 @@ async function EventDetail({ params }: { params: PageProps<"/events/[slug]">["pa
         <dd>
           {e.minAge} to {e.maxAge}
         </dd>
+        <dt className="label pt-0.5">Adults</dt>
+        <dd>{e.adultPrice ? (/^free$/i.test(e.adultPrice) ? "Free" : e.adultPrice) : "Not stated. Check with the organiser."}</dd>
         <dt className="label pt-0.5">Run by</dt>
         <dd>{e.organiser}</dd>
       </dl>

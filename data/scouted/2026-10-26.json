@@ -16,7 +16,8 @@
     "end": "21:00",
     "description": "An evening Halloween festival in Trentham Gardens with spooky family entertainment after dark. Some activities cost extra; members get cheaper tickets.",
     "sourceUrl": "https://trentham.co.uk/events/trentham-halloween-festival/",
-    "bookingUrl": "https://tickets.trentham.co.uk/tickets/#eventid?eventid=12"
+    "bookingUrl": "https://tickets.trentham.co.uk/tickets/#eventid?eventid=12",
+    "adultPrice": "£14.50 (£12 members)"
   },
   {
     "minAge": 0,
@@ -71,7 +72,8 @@
     "end": "14:00",
     "timesNote": "Show 12–1pm, then an optional puppet-making workshop 1–2pm",
     "description": "A family theatre show with songs, puppets and a little magic about a girl who finds a wish-granting pebble on the beach. Afterwards, children can stay to make their own dragon puppet.",
-    "sourceUrl": "https://mitchellartscentre.co.uk/sand-dragon-show"
+    "sourceUrl": "https://mitchellartscentre.co.uk/sand-dragon-show",
+    "adultPrice": "£4"
   },
   {
     "minAge": 3,
@@ -88,7 +90,8 @@
     "start": "12:30",
     "end": "14:30",
     "description": "A family musical mixing live action, music and animation about a witch who can't get to sleep. Children join in and help shape the story.",
-    "sourceUrl": "https://mitchellartscentre.co.uk/the-witch-who-couldnt-sleep"
+    "sourceUrl": "https://mitchellartscentre.co.uk/the-witch-who-couldnt-sleep",
+    "adultPrice": "£7.50"
   },
   {
     "minAge": 8,
@@ -105,7 +108,8 @@
     "start": "12:00",
     "end": "13:30",
     "description": "A hands-on parent-and-child circus skills session: plate spinning, diabolo, scarf juggling and tightrope balancing. Beginners welcome.",
-    "sourceUrl": "https://mitchellartscentre.co.uk/circus-in-a-box"
+    "sourceUrl": "https://mitchellartscentre.co.uk/circus-in-a-box",
+    "adultPrice": "Included in the £5"
   },
   {
     "minAge": 0,
@@ -207,7 +211,8 @@
     "start": "10:00",
     "end": "11:00",
     "description": "An hour-long Peppa Pig Christmas cinema show with festive episodes and new songs to sing and dance along to.",
-    "sourceUrl": "https://mitchellartscentre.co.uk/festive-fun-with-peppa-cinema-experience"
+    "sourceUrl": "https://mitchellartscentre.co.uk/festive-fun-with-peppa-cinema-experience",
+    "adultPrice": "One adult free"
   },
   {
     "minAge": 0,
@@ -224,6 +229,7 @@
     "start": "12:00",
     "end": "20:00",
     "description": "A festive day at Middleport Pottery: Santa and Mrs Claus arrive by narrowboat for photos, plus a draft horse, potter dress-up, lino printing, live music and Christmas lights.",
-    "sourceUrl": "https://www.visitstoke.co.uk/whats-on/middleport-pottery-christmas-festival-in-partnership-with-steelite-international-p2682521"
+    "sourceUrl": "https://www.visitstoke.co.uk/whats-on/middleport-pottery-christmas-festival-in-partnership-with-steelite-international-p2682521",
+    "adultPrice": "£6"
   }
 ]

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { PublicEvent } from "@/db/queries";
+import { adultLabel } from "@/lib/price";
 import { repeatLabel } from "@/lib/recurrence";
 import { formatDayShort, formatShortDate, formatTime, isMultiDay } from "@/lib/time";
 import { PriceBadge } from "./PriceBadge";
@@ -54,6 +55,7 @@ export function EventTile({ event: e, areaName, distance, highlighted, onHover, 
         <div className="mt-1 flex flex-wrap gap-1 text-[12px] font-bold">
           {e.repeatsWeekly && <span className="rounded-lg bg-surface/70 px-2 py-0.5">{repeatLabel(e)}</span>}
           <span className="rounded-lg bg-surface/70 px-2 py-0.5">Ages {e.minAge}–{e.maxAge}</span>
+          {adultLabel(e.adultPrice) && <span className="rounded-lg bg-surface/70 px-2 py-0.5">{adultLabel(e.adultPrice)}</span>}
           {e.isSample && <span className="rounded-lg border border-dashed border-paid px-2 py-0.5 text-paid">Sample</span>}
         </div>
       </div>

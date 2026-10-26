@@ -17,4 +17,7 @@ export async function fillPrices() {
     filled++;
   }
   if (filled) console.log(`Worked out prices for ${filled} events.`);
+  // Free events are free for adults too, unless a listing says otherwise.
+  const adults = await db.update(events).set({ adultPrice: "Free" }).where(and(eq(events.isFree, true), isNull(events.adultPrice))).returning({ id: events.id });
+  if (adults.length) console.log(`Marked ${adults.length} free events as free for adults.`);
 }

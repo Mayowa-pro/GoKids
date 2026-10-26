@@ -32,4 +32,4 @@ Each file is a list of events in this shape:
 - A session that runs every week on the same day and time is one entry with `"repeatsWeekly": true` and `date` set to any one session (optional `"repeatUntil"` for the last date). The site shows the next session automatically.
 - Only repeat an event when it happens on separate, non-consecutive days.
 
-Allowed `category` values and `area` slugs are in `src/lib/site.ts`. Paid events add `"priceText": "£5 per child"`.
+Allowed `category` values and `area` slugs are in `src/lib/site.ts`. Paid events add `"priceText": "£5 per child"` (the child price) and, when the page says, `"adultPrice"`: `"Free"`, `"£4"` or a short phrase like `"One adult free"` (40 characters max). Leave `adultPrice` out if the page doesn't say; free events count as free for adults automatically.

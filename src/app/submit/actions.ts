@@ -7,7 +7,7 @@ import { LIVE_REGIONS } from "@/lib/site";
 import { slugify } from "@/lib/slug";
 import { londonMidnight } from "@/lib/time";
 import { validateSubmission, type FieldErrors } from "@/lib/validation";
-import { priceFromText } from "@/lib/price";
+import { defaultAdultPrice, priceFromText } from "@/lib/price";
 
 export type SubmitState = { status: "idle" } | { status: "error"; errors: FieldErrors; values: Record<string, string> } | { status: "ok"; title: string };
 
@@ -53,6 +53,7 @@ export async function submitEvent(_prev: SubmitState, form: FormData): Promise<S
       isFree: s.isFree,
       priceText: s.isFree ? null : s.priceText,
       priceFrom: priceFromText(s.isFree, s.priceText),
+      adultPrice: defaultAdultPrice(s.isFree, s.adultPrice),
       minAge: s.minAge,
       maxAge: s.maxAge,
       organiser: s.organiser,

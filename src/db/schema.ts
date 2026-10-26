@@ -29,6 +29,8 @@ export const events = sqliteTable(
     priceText: text("price_text"),
     /** Cheapest ticket in pence (0 = free, null = unknown), worked out from priceText, for the budget filter. */
     priceFrom: integer("price_from"),
+    /** What adults pay, e.g. "Free", "£4" or "One adult free". Null when we don't know. */
+    adultPrice: text("adult_price"),
     minAge: integer("min_age").notNull().default(0),
     maxAge: integer("max_age").notNull().default(16),
     organiser: text("organiser").notNull(),
