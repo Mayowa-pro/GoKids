@@ -15,7 +15,7 @@ export const SITE = {
   /** Shown on the Contact and Privacy pages. */
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "hello@mylittleoutings.co.uk",
   /** Google Analytics ID (starts with G-). Empty means no analytics and no cookie banner. */
-  gaId: process.env.NEXT_PUBLIC_GA_ID ?? "",
+  gaId: process.env.NEXT_PUBLIC_GA_ID ?? "G-NT65LLKXK2",
 } as const;
 
 export type Area = { slug: string; name: string; lat: number; lng: number };
