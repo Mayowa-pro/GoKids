@@ -37,6 +37,8 @@ async function EventDetail({ params }: { params: PageProps<"/events/[slug]">["pa
   const areaName = region?.areas.find((a) => a.slug === e.area)?.name ?? e.area;
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${e.venue}, ${e.postcode ?? areaName}`)}`;
 
+  const price = e.priceFrom != null ? (e.priceFrom / 100).toFixed(2) : null;
+  const soldOut = /sold out/i.test(e.priceText ?? "");
   // Structured data so search engines can show the event in results.
   const jsonLd = {
     "@context": "https://schema.org",
@@ -56,14 +58,21 @@ async function EventDetail({ params }: { params: PageProps<"/events/[slug]">["pa
       geo: { "@type": "GeoCoordinates", latitude: e.lat, longitude: e.lng },
     },
     organizer: { "@type": "Organization", name: e.organiser, url: e.bookingUrl ?? undefined },
+    // Google asks for a performer; the organiser is the closest thing we know.
+    performer: { "@type": "PerformingGroup", name: e.organiser },
     image: [`${SITE.url}/events/${e.slug}/opengraph-image`],
-    offers: {
-      "@type": "Offer",
-      price: e.isFree ? 0 : e.priceFrom != null ? (e.priceFrom / 100).toFixed(2) : undefined,
-      priceCurrency: "GBP",
-      url: e.bookingUrl ?? `${SITE.url}/events/${e.slug}`,
-      availability: "https://schema.org/InStock",
-    },
+    // Only describe tickets when we know the price, so search engines never see an offer without one.
+    offers:
+      e.isFree || price != null
+        ? {
+            "@type": "Offer",
+            price: e.isFree ? "0" : price,
+            priceCurrency: "GBP",
+            url: e.bookingUrl ?? `${SITE.url}/events/${e.slug}`,
+            availability: soldOut ? "https://schema.org/SoldOut" : "https://schema.org/InStock",
+            validFrom: e.listedAt.toISOString(),
+          }
+        : undefined,
     url: `${SITE.url}/events/${e.slug}`,
   };
 

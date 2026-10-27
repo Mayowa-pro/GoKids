@@ -8,6 +8,8 @@ import { events, type EventRow } from "./schema";
 
 export type PublicEvent = Omit<EventRow, "contactEmail" | "status" | "createdAt"> & {
   featured: boolean;
+  /** When the listing was added, used as the date tickets were "on offer" from for search engines. */
+  listedAt: Date;
   /** Later dates of the same event inside the chosen window, shown as "Also on …" instead of a second card. */
   alsoOn?: Date[];
 };
@@ -15,7 +17,7 @@ export type PublicEvent = Omit<EventRow, "contactEmail" | "status" | "createdAt"
 function toPublic(e: EventRow, now: Date): PublicEvent {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { contactEmail, status, createdAt, ...rest } = e;
-  return { ...rest, featured: !!e.featuredUntil && e.featuredUntil > now };
+  return { ...rest, listedAt: createdAt, featured: !!e.featuredUntil && e.featuredUntil > now };
 }
 
 export async function listEvents(region: string, f: EventFilters, now = new Date()): Promise<PublicEvent[]> {
