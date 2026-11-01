@@ -17,6 +17,11 @@ export function londonDateKey(at: Date): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(at);
 }
 
+/** The hour (0 to 23) on a UK clock. */
+export function londonHour(at: Date): number {
+  return Number(new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", hourCycle: "h23" }).format(at));
+}
+
 /** UTC instant of London midnight for a "YYYY-MM-DD" key. */
 export function londonMidnight(dateKey: string): Date {
   const [y, mo, d] = dateKey.split("-").map(Number);
@@ -67,4 +72,14 @@ export function formatDayShort(at: Date, withMonth = true): string {
 /** True for events that run over several days, like a half-term trail. */
 export function isMultiDay(e: { startsAt: Date; endsAt: Date }): boolean {
   return londonDateKey(e.startsAt) !== londonDateKey(e.endsAt);
+}
+
+/** For events over several days: "Sat 14 & Sun 15" for a short run, "Daily to 15 Nov" for a longer one. */
+export function formatRun(e: { startsAt: Date; endsAt: Date }): string {
+  const a = londonDateKey(e.startsAt);
+  const b = londonDateKey(e.endsAt);
+  const days = Math.round((Date.parse(b) - Date.parse(a)) / 86_400_000);
+  if (days === 1) return `${formatDayShort(e.startsAt, false)} & ${formatDayShort(e.endsAt, false)}`;
+  if (days === 2) return `${formatDayShort(e.startsAt, false)} to ${formatDayShort(e.endsAt, false)}`;
+  return `Daily to ${formatShortDate(e.endsAt)}`;
 }

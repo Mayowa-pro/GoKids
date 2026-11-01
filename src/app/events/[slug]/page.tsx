@@ -5,10 +5,11 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { PriceBadge } from "@/components/PriceBadge";
 import { tileColour } from "@/components/EventTile";
-import { getEventBySlug } from "@/db/queries";
+import { getEventBySlug, listEvents, type PublicEvent } from "@/db/queries";
+import { ShareButton } from "@/components/ShareButton";
 import { SITE, getRegion } from "@/lib/site";
 import { repeatLabel } from "@/lib/recurrence";
-import { formatLongDate, formatTime, isMultiDay } from "@/lib/time";
+import { addDays, formatDayHeading, formatLongDate, formatTime, isMultiDay, londonDateKey, londonMidnight } from "@/lib/time";
 
 export async function generateMetadata({ params }: PageProps<"/events/[slug]">): Promise<Metadata> {
   await connection();
@@ -132,8 +133,54 @@ async function EventDetail({ params }: { params: PageProps<"/events/[slug]">["pa
         <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="flex min-h-12 items-center rounded-2xl bg-cobalt-soft px-5 font-semibold text-cobalt hover:opacity-90">
           Directions
         </a>
+        <a href={`/events/${e.slug}/calendar`} className="flex min-h-12 items-center gap-2 rounded-2xl bg-cobalt-soft px-5 font-semibold text-cobalt hover:opacity-90">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><rect x="3" y="5" width="18" height="16" rx="3" /><path d="M3 10h18M8 3v4M16 3v4" /></svg>
+          Add to calendar
+        </a>
+        <ShareButton title={e.title} url={`${SITE.url}/events/${e.slug}`} className="flex min-h-12 items-center gap-2 rounded-2xl bg-cobalt-soft px-5 font-semibold text-cobalt hover:opacity-90" />
       </div>
+      <Suspense fallback={null}>
+        <SameDay event={e} areaName={(slug) => region?.areas.find((a) => a.slug === slug)?.name ?? slug} />
+      </Suspense>
     </article>
+  );
+}
+
+/** A few other things on the same day, so the page isn't a dead end. */
+async function SameDay({ event: e, areaName }: { event: PublicEvent; areaName: (slug: string) => string }) {
+  const key = londonDateKey(e.startsAt);
+  const now = new Date();
+  const from = londonMidnight(key) > now ? londonMidnight(key) : now;
+  const others = (
+    await listEvents(e.region, { when: "date", date: key, age: "all", free: false, q: "" }, now, { from, to: londonMidnight(addDays(key, 1)) })
+  )
+    .filter((o) => o.id !== e.id)
+    .slice(0, 4);
+  if (!others.length) return null;
+  const day = formatDayHeading(key, londonDateKey(now));
+  const dayName = day.label === "Today" || day.label === "Tomorrow" ? day.label.toLowerCase() : `on ${day.label}`;
+  return (
+    <section className="mt-10">
+      <h2 className="mb-3 font-display text-2xl font-bold">More {dayName}</h2>
+      <ul className="flex flex-col gap-2.5">
+        {others.map((o) => (
+          <li key={o.id}>
+            <Link href={`/events/${o.slug}`} className={`flex items-center gap-3 rounded-[18px] p-3 hover:outline hover:outline-2 hover:outline-cobalt ${tileColour(o.id)}`}>
+              <span className="shrink-0 rounded-xl bg-surface px-2.5 py-1 text-[13px] font-bold tabular-nums">{isMultiDay(o) ? "All day" : formatTime(o.startsAt)}</span>
+              <span className="min-w-0">
+                <span className="block font-display text-[17px] font-semibold leading-tight">{o.title}</span>
+                <span className="block text-sm">
+                  {o.venue}, {areaName(o.area)} · {o.isFree ? "Free" : (o.priceText ?? "Paid")}
+                </span>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <Link href={`/${e.region}?day=${key}`} className="mt-3 inline-block font-semibold text-cobalt hover:underline">
+        See everything on that day →
+      </Link>
+    </section>
   );
 }
 

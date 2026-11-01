@@ -1,6 +1,6 @@
 import { and, asc, eq, gte, isNull, like, lt, lte, or } from "drizzle-orm";
 import { covers, sameEventKey } from "@/lib/dedupe";
-import { ageRange, dateWindow, type EventFilters } from "@/lib/filters";
+import { ageRange, dateWindow, minTopAge, searchTerms, type EventFilters } from "@/lib/filters";
 import { nextOccurrence } from "@/lib/recurrence";
 import { londonDateKey } from "@/lib/time";
 import { db } from ".";
@@ -20,21 +20,25 @@ function toPublic(e: EventRow, now: Date): PublicEvent {
   return { ...rest, listedAt: createdAt, featured: !!e.featuredUntil && e.featuredUntil > now };
 }
 
-export async function listEvents(region: string, f: EventFilters, now = new Date()): Promise<PublicEvent[]> {
-  const { from, to } = dateWindow(f.when, now, f.date);
+export async function listEvents(region: string, f: EventFilters, now = new Date(), window?: { from: Date; to: Date }): Promise<PublicEvent[]> {
+  const { from, to } = window ?? dateWindow(f.when, now, f.date);
   const { min, max } = ageRange(f.age);
-  const q = f.q ? `%${f.q.replace(/[%_]/g, "")}%` : null;
+  const terms = searchTerms(f.q).map((w) => `%${w}%`);
 
   const shared = and(
     eq(events.region, region),
     eq(events.status, "approved"),
     lte(events.minAge, max),
     gte(events.maxAge, min),
+    // Leave out events that only touch the group at its bottom edge (ages 0 to 5 under "5 to 11").
+    or(gte(events.maxAge, minTopAge(f.age)), gte(events.minAge, min)),
     f.free ? eq(events.isFree, true) : undefined,
     // A budget keeps free events and ones whose cheapest ticket fits; unknown prices are left out.
     !f.free && f.max ? or(eq(events.isFree, true), lte(events.priceFrom, f.max * 100)) : undefined,
-    q
-      ? or(like(events.title, q), like(events.venue, q), like(events.category, q), like(events.organiser, q), like(events.description, q))
+    terms.length
+      ? or(
+          ...terms.flatMap((q) => [like(events.title, q), like(events.venue, q), like(events.category, q), like(events.organiser, q), like(events.description, q)]),
+        )
       : undefined,
   );
 
@@ -98,6 +102,22 @@ export async function listUpcomingSlugs(now = new Date()) {
     .select({ slug: events.slug, region: events.region })
     .from(events)
     .where(and(eq(events.status, "approved"), or(gte(events.endsAt, now), eq(events.repeatsWeekly, true))));
+}
+
+/**
+ * The first day after `after` (within two weeks) with something on for the same choices,
+ * so an empty day can point parents straight to it.
+ */
+export async function findNextDay(region: string, f: EventFilters, after: Date, now = new Date()): Promise<{ date: string; count: number } | null> {
+  const list = await listEvents(region, f, now, { from: after, to: new Date(after.getTime() + 15 * 86_400_000) });
+  if (!list.length) return null;
+  const keyOf = (e: PublicEvent) => {
+    const k = londonDateKey(e.startsAt);
+    const a = londonDateKey(after);
+    return k < a ? a : k;
+  };
+  const date = list.map(keyOf).sort()[0];
+  return { date, count: list.filter((e) => keyOf(e) === date).length };
 }
 
 /** The next few one-off events after `after`, for the "Coming up" box. */

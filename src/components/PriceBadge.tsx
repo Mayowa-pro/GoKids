@@ -4,7 +4,7 @@ export function PriceBadge({ isFree, priceText, small }: { isFree: boolean; pric
     <span className={`whitespace-nowrap rounded-xl bg-yolk font-bold text-yolk-ink ${size}`}>Free</span>
   ) : (
     <span
-      className={`rounded-xl font-bold text-paid ${small ? "max-w-[13ch] truncate bg-surface" : "bg-paid-soft"} ${size}`}
+      className={`rounded-xl font-bold text-paid ${small ? "bg-surface leading-snug" : "bg-paid-soft"} ${size}`}
       title={priceText ?? "Paid"}
     >
       {priceText ?? "Paid"}
