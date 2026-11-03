@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useActionState, useState } from "react";
-import { CATEGORIES, type Area } from "@/lib/site";
+import { CATEGORIES, SITE, type Area } from "@/lib/site";
 import { submitEvent, type SubmitState } from "./actions";
 
 const input = "w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 aria-invalid:border-danger";
@@ -47,9 +47,11 @@ function Form({ areas, onReset }: { areas: Area[]; onReset: () => void }) {
           <button type="button" onClick={onReset} className="rounded-full bg-cobalt px-5 py-2.5 font-semibold text-surface">
             Add another event
           </button>
-          <Link href="/for-organisers" className="rounded-full border border-line px-5 py-2.5 font-semibold">
-            Boost this event
-          </Link>
+          {SITE.showOrganisersPage && (
+            <Link href="/for-organisers" className="rounded-full border border-line px-5 py-2.5 font-semibold">
+              Boost this event
+            </Link>
+          )}
         </div>
       </div>
     );

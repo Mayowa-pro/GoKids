@@ -69,9 +69,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               </span>
             </Link>
             <nav className="ml-auto flex items-center gap-2 text-sm font-semibold">
-              <Link href="/for-organisers" className="hidden rounded-full px-3 py-2 hover:bg-cobalt-soft sm:inline-block">
-                For organisers
-              </Link>
+              {SITE.showOrganisersPage && (
+                <Link href="/for-organisers" className="hidden rounded-full px-3 py-2 hover:bg-cobalt-soft sm:inline-block">
+                  For organisers
+                </Link>
+              )}
               <Link href="/submit" className="rounded-2xl bg-cobalt px-4 py-2.5 text-surface hover:opacity-90">
                 List an event
               </Link>
@@ -82,7 +84,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <footer className="border-t border-line bg-surface">
           <div className="mx-auto flex max-w-6xl flex-wrap gap-x-6 gap-y-2 px-4 py-6 text-sm text-muted">
             <span>© {SITE.name}. Always free for parents.</span>
-            <Link href="/for-organisers" className="hover:text-ink">Boost your event</Link>
+            {SITE.showOrganisersPage && <Link href="/for-organisers" className="hover:text-ink">Boost your event</Link>}
             <Link href="/submit" className="hover:text-ink">List an event</Link>
             <Link href="/about" className="hover:text-ink">About</Link>
             <Link href="/contact" className="hover:text-ink">Contact</Link>
