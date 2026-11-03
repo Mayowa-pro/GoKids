@@ -82,7 +82,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <footer className="border-t border-line bg-surface">
           <div className="mx-auto flex max-w-6xl flex-wrap gap-x-6 gap-y-2 px-4 py-6 text-sm text-muted">
             <span>© {SITE.name}. Always free for parents.</span>
-            <Link href="/for-organisers" className="hover:text-ink">Boost your event</Link>
+            <Link href="/for-organisers" className="hover:text-ink">For organisers</Link>
             <Link href="/submit" className="hover:text-ink">List an event</Link>
             <Link href="/about" className="hover:text-ink">About</Link>
             <Link href="/contact" className="hover:text-ink">Contact</Link>

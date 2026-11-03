@@ -33,10 +33,6 @@ export default function ContactPage() {
         <li>
           The quickest way to get listed is the <Link href="/submit">add an event form</Link>. It&apos;s free.
         </li>
-        <li>
-          To feature your event or become a club partner, see <Link href="/for-organisers">for organisers</Link> or{" "}
-          <a href={mail("Featuring my event")}>email us</a>.
-        </li>
       </ul>
 
       <H2>Your data</H2>
