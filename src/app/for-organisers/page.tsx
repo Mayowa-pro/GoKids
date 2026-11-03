@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { SITE } from "@/lib/site";
 
-export const metadata: Metadata = { title: "For organisers", description: "List your kids' club, class or event for free, or boost it to reach more local parents." };
+export const metadata: Metadata = { robots: SITE.showOrganisersPage ? undefined : { index: false }, title: "For organisers", description: "List your kids' club, class or event for free, or boost it to reach more local parents." };
 
 const TIERS = [
   { name: "Free listing", price: "£0", per: "", points: ["In the feed and on the map", "Checked by a person before it goes live", "Your own event page, found on Google"], cta: "List an event", href: "/submit" },
@@ -11,6 +12,7 @@ const TIERS = [
 ];
 
 export default function OrganisersPage() {
+  if (!SITE.showOrganisersPage) notFound();
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
       <p className="label">For clubs, classes and venues</p>

@@ -6,7 +6,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const events = await listUpcomingSlugs();
   return [
     { url: SITE.url, changeFrequency: "daily" as const, priority: 1 },
-    { url: `${SITE.url}/for-organisers` },
+    ...(SITE.showOrganisersPage ? [{ url: `${SITE.url}/for-organisers` }] : []),
     { url: `${SITE.url}/about` },
     { url: `${SITE.url}/contact` },
     { url: `${SITE.url}/privacy` },
