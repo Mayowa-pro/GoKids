@@ -3,6 +3,7 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { EventTile, tileColour } from "@/components/EventTile";
+import { QuickPlanner } from "@/components/QuickPlanner";
 import { listEvents, type PublicEvent } from "@/db/queries";
 import { LIVE_REGIONS, SITE } from "@/lib/site";
 import { formatDayShort, formatRun, formatTime, isMultiDay, londonDateKey } from "@/lib/time";
@@ -97,11 +98,6 @@ async function ThisWeek() {
   );
 }
 
-const STEPS = [
-  { n: "1", title: "Pick who's coming", text: "Under 5s, 5 to 11s, or 12 and over.", bg: "bg-[var(--tile-1)]" },
-  { n: "2", title: "Pick a day", text: "Today, the weekend or any day in the next two weeks.", bg: "bg-[var(--tile-2)]" },
-  { n: "3", title: "Off you go", text: "Free and paid ideas near you, with times, prices and directions.", bg: "bg-[var(--tile-4)]" },
-];
 
 export default function Home() {
   return (
@@ -133,18 +129,9 @@ export default function Home() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pt-12">
-        <h2 className="mb-4 font-display text-2xl font-bold">How it works</h2>
-        <ol className="grid gap-3 md:grid-cols-3">
-          {STEPS.map((s) => (
-            <li key={s.n} className={`flex gap-4 rounded-tile p-5 ${s.bg}`}>
-              <span className="grid size-11 shrink-0 place-items-center rounded-full bg-cobalt font-display text-xl font-bold text-white">{s.n}</span>
-              <span>
-                <span className="block font-display text-xl font-semibold">{s.title}</span>
-                <span className="text-[15px]">{s.text}</span>
-              </span>
-            </li>
-          ))}
-        </ol>
+        <h2 className="mb-1 font-display text-2xl font-bold">Get started</h2>
+        <p className="mb-4 text-muted">Three taps and you&apos;re done.</p>
+        <QuickPlanner regionSlug={region.slug} />
       </section>
 
       <Suspense fallback={null}>
