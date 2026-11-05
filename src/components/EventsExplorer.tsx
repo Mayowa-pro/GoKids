@@ -306,7 +306,7 @@ export function EventsExplorer({ heading, events, areas, near, center, zoom, tod
           <div className="mt-2 flex flex-wrap gap-4 px-1 text-xs text-muted">
             <span className="flex items-center gap-1.5"><i className="inline-block size-2.5 rounded-full bg-yolk" />Free</span>
             <span className="flex items-center gap-1.5"><i className="inline-block size-2.5 rounded-full bg-paid" />Paid</span>
-            <span className="flex items-center gap-1.5"><i className="inline-block size-3 rounded-full border-[3px] border-cobalt" />Featured</span>
+            {events.some((e) => e.featured) && <span className="flex items-center gap-1.5"><i className="inline-block size-3 rounded-full border-[3px] border-cobalt" />Featured</span>}
             {origin && <span className="flex items-center gap-1.5"><i className="inline-block size-3 rounded-full bg-coral ring-2 ring-surface" />You</span>}
           </div>
         </aside>

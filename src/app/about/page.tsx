@@ -36,8 +36,7 @@ export default function AboutPage() {
 
       <H2>Always free for parents</H2>
       <p>
-        You never pay to use {SITE.name} and you don&apos;t need an account. Organisers can list events for free too, and
-        can pay a small fee to have theirs featured. Featured events are always marked with a ★.
+        You never pay to use {SITE.name} and you don&apos;t need an account. Organisers can list their events for free too.
       </p>
 
       <H2>Starting in Stoke-on-Trent</H2>

@@ -1,0 +1,41 @@
+[
+  {
+    "title": "Festive Fun with Peppa",
+    "description": "An hour-long Peppa Pig Christmas cinema show with festive episodes about Evie's first Christmas and new songs to sing and dance along to. Extra weekend showings.",
+    "category": "Performing arts",
+    "area": "hanley",
+    "venue": "Mitchell Arts Centre",
+    "postcode": "ST1 4HG",
+    "date": "2026-11-21",
+    "endDate": "2026-11-22",
+    "start": "10:00",
+    "end": "11:00",
+    "isFree": false,
+    "priceText": "£4 per child (one adult free)",
+    "adultPrice": "One adult free",
+    "minAge": 0,
+    "maxAge": 6,
+    "organiser": "Mitchell Arts Centre",
+    "sourceUrl": "https://mitchellartscentre.co.uk/festive-fun-with-peppa-cinema-experience"
+  },
+  {
+    "title": "Disney's Frozen Jr.",
+    "description": "Young performers from Rooftop Studios' Stage Academy put on Disney's Frozen Jr., the musical, with all the songs, dancing and the story of Anna and Elsa.",
+    "category": "Performing arts",
+    "area": "hanley",
+    "venue": "Mitchell Arts Centre",
+    "postcode": "ST1 4HG",
+    "date": "2026-11-09",
+    "endDate": "2026-11-10",
+    "start": "19:00",
+    "end": "21:00",
+    "isFree": false,
+    "priceText": "£19.50",
+    "adultPrice": "£21",
+    "minAge": 0,
+    "maxAge": 16,
+    "organiser": "Rooftop Studios",
+    "sourceUrl": "https://www.visitstoke.co.uk/whats-on/frozen-jr-p2577381",
+    "bookingUrl": "https://mitchellartscentre.co.uk/disneysfrozenjr"
+  }
+]
