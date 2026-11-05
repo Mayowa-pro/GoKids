@@ -1,6 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import type { PublicEvent } from "@/db/queries";
 import { distanceKm, formatMiles, type LatLng } from "@/lib/geo";
@@ -22,9 +24,12 @@ type Props = {
   center: LatLng;
   zoom: number;
   todayKey: string;
+  /** Where to send parents when the chosen day is empty. */
+  nextDay?: { label: string; href: string } | null;
+  searched?: boolean;
 };
 
-export function EventsExplorer({ heading, events, areas, near, center, zoom, todayKey }: Props) {
+export function EventsExplorer({ heading, events, areas, near, center, zoom, todayKey, nextDay, searched }: Props) {
   const [hovered, setHovered] = useState<number | null>(null);
   const [view, setView] = useState<"list" | "map">("list");
   const [myLocation, setMyLocation] = useState<{ point: LatLng; label: string } | null>(null);
@@ -32,6 +37,18 @@ export function EventsExplorer({ heading, events, areas, near, center, zoom, tod
   const [postcode, setPostcode] = useState("");
   const [busy, setBusy] = useState(false);
   const [sortBy, setSortBy] = useState<"distance" | "day">("distance");
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
+
+  /** Pick a town (or none), kept in the address so it can be shared. */
+  function setTown(slug: string | undefined) {
+    const p = new URLSearchParams(params.toString());
+    if (slug) p.set("near", slug);
+    else p.delete("near");
+    const s = p.toString();
+    router.replace(pathname + (s ? `?${s}` : ""), { scroll: false });
+  }
 
   // Remember the parent's postcode on this device (only a convenience, so failures are ignored).
   useEffect(() => {
@@ -131,12 +148,19 @@ export function EventsExplorer({ heading, events, areas, near, center, zoom, tod
       )}
       <section aria-labelledby="near-me" className="mb-6 rounded-tile bg-[var(--tile-2)] p-4 sm:p-5">
         <h2 id="near-me" className="font-display text-xl font-bold">
-          {myLocation ? `Showing what's nearest to ${myLocation.label}` : "Find events near you"}
+          {myLocation ? `Showing what's nearest to ${myLocation.label}` : nearArea ? `Showing what's nearest to ${nearArea.name}` : "Find events near you"}
         </h2>
-        {myLocation ? (
+        {myLocation || nearArea ? (
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <span className="text-[15px]">Closest first, with how far each one is.</span>
-            <button type="button" onClick={() => remember(null)} className="min-h-11 rounded-2xl bg-surface px-4 font-semibold text-cobalt">
+            <button
+              type="button"
+              onClick={() => {
+                remember(null);
+                if (nearArea) setTown(undefined);
+              }}
+              className="min-h-11 rounded-2xl bg-surface px-4 font-semibold text-cobalt"
+            >
               Change location
             </button>
           </div>
@@ -160,6 +184,17 @@ export function EventsExplorer({ heading, events, areas, near, center, zoom, tod
               <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><circle cx="12" cy="12" r="4" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3" /></svg>
               Use my location
             </button>
+            <label className="flex min-h-11 items-center gap-2 text-sm font-semibold">
+              or pick a town
+              <select id="near" value="" onChange={(e) => setTown(e.target.value || undefined)} className="min-h-11 rounded-2xl bg-surface px-3 text-[15px] text-cobalt">
+                <option value="">Choose…</option>
+                {areas.map((a) => (
+                  <option key={a.slug} value={a.slug}>
+                    {a.name}
+                  </option>
+                ))}
+              </select>
+            </label>
           </form>
         )}
         {locError && <p role="alert" className="mt-2 text-sm font-semibold text-danger">{locError}</p>}
@@ -210,10 +245,21 @@ export function EventsExplorer({ heading, events, areas, near, center, zoom, tod
       <div className={`grid items-start gap-6 ${origin ? "" : "lg:grid-cols-[minmax(0,1fr)_420px]"}`}>
         <div className={`${view === "map" && !origin ? "hidden lg:flex" : "flex"} min-w-0 flex-col gap-6`} aria-live="polite">
           {days.length === 0 && (
-            <div className="rounded-tile bg-cobalt-soft p-8 text-center text-muted">
-              <strong className="text-ink">Nothing on for that choice.</strong>
-              <br />
-              Try another day, &ldquo;Next 7 days&rdquo;, another age group, or switch off &ldquo;Free only&rdquo;.
+            <div className="flex flex-col items-center gap-3 rounded-tile bg-cobalt-soft p-6 text-center text-muted sm:p-8">
+              <p>
+                <strong className="text-ink">{searched ? "No matches for that search." : "Nothing on for that choice."}</strong>
+                <br />
+                {nextDay
+                  ? "But there's more coming up soon:"
+                  : searched
+                    ? "Try a shorter word, like \u201crhyme\u201d, \u201cLego\u201d or \u201cplay\u201d, or pick \u201cEverything\u201d."
+                    : "Try \u201cNext 7 days\u201d, another age group, or a bigger budget."}
+              </p>
+              {nextDay && (
+                <Link href={nextDay.href} scroll={false} className="flex min-h-12 items-center rounded-2xl bg-cobalt px-5 font-semibold text-white hover:opacity-90">
+                  {nextDay.label} →
+                </Link>
+              )}
             </div>
           )}
           {days.map(([key, list]) => {

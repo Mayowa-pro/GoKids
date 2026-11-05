@@ -1,8 +1,9 @@
 import Link from "next/link";
+import { Fragment } from "react";
 import type { PublicEvent } from "@/db/queries";
 import { adultLabel } from "@/lib/price";
 import { repeatLabel } from "@/lib/recurrence";
-import { formatDayShort, formatShortDate, formatTime, isMultiDay } from "@/lib/time";
+import { formatDayShort, formatRun, formatTime, isMultiDay } from "@/lib/time";
 import { PriceBadge } from "./PriceBadge";
 
 const TILE_COLOURS = ["bg-[var(--tile-1)]", "bg-[var(--tile-2)]", "bg-[var(--tile-3)]", "bg-[var(--tile-4)]", "bg-[var(--tile-5)]"];
@@ -24,7 +25,8 @@ type Props = {
 
 export function EventTile({ event: e, areaName, distance, highlighted, onHover, showDay }: Props) {
   const day = showDay ? `${formatDayShort(e.startsAt, false)}, ` : "";
-  const when = isMultiDay(e) ? `Daily to ${formatShortDate(e.endsAt)}` : `${day}${formatTime(e.startsAt)}`;
+  const when = isMultiDay(e) ? formatRun(e) : `${day}${formatTime(e.startsAt)}`;
+  const facts = [e.repeatsWeekly ? repeatLabel(e) : null, `Ages ${e.minAge}–${e.maxAge}`, adultLabel(e.adultPrice)].filter((f): f is string => !!f);
   return (
     <Link
       href={`/events/${e.slug}`}
@@ -34,7 +36,7 @@ export function EventTile({ event: e, areaName, distance, highlighted, onHover, 
       onFocus={onHover && (() => onHover(e.id))}
       onBlur={onHover && (() => onHover(null))}
       className={[
-        "flex min-h-[200px] flex-col justify-between gap-3 rounded-tile p-3.5 text-ink transition-transform hover:-translate-y-0.5",
+        "flex flex-col gap-3 rounded-tile p-3.5 text-ink transition-transform hover:-translate-y-0.5",
         tileColour(e.id),
         e.featured || highlighted ? "outline outline-[3px] outline-offset-0 outline-cobalt" : "",
       ].join(" ")}
@@ -52,12 +54,15 @@ export function EventTile({ event: e, areaName, distance, highlighted, onHover, 
         </p>
         {e.timesNote && <p className="text-[13px] font-semibold leading-snug">{e.timesNote}</p>}
         {e.alsoOn?.length ? <p className="text-[13px] font-semibold leading-snug">Also on {e.alsoOn.map((d) => formatDayShort(d)).join(", ")}</p> : null}
-        <div className="mt-1 flex flex-wrap gap-1 text-[12px] font-bold">
-          {e.repeatsWeekly && <span className="rounded-lg bg-surface/70 px-2 py-0.5">{repeatLabel(e)}</span>}
-          <span className="rounded-lg bg-surface/70 px-2 py-0.5">Ages {e.minAge}–{e.maxAge}</span>
-          {adultLabel(e.adultPrice) && <span className="rounded-lg bg-surface/70 px-2 py-0.5">{adultLabel(e.adultPrice)}</span>}
-          {e.isSample && <span className="rounded-lg border border-dashed border-paid px-2 py-0.5 text-paid">Sample</span>}
-        </div>
+        <p className="mt-1 text-[12.5px] font-bold leading-snug">
+          {facts.map((f, i) => (
+            <Fragment key={f}>
+              {i > 0 && " · "}
+              <span className="whitespace-nowrap">{f}</span>
+            </Fragment>
+          ))}
+        </p>
+        {e.isSample && <span className="self-start rounded-lg border border-dashed border-paid px-2 py-0.5 text-[12px] font-bold text-paid">Sample</span>}
       </div>
     </Link>
   );

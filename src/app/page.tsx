@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import { EventTile, tileColour } from "@/components/EventTile";
 import { listEvents, type PublicEvent } from "@/db/queries";
 import { LIVE_REGIONS, SITE } from "@/lib/site";
-import { formatDayShort, formatTime, isMultiDay, londonDateKey } from "@/lib/time";
+import { formatDayShort, formatRun, formatTime, isMultiDay, londonDateKey } from "@/lib/time";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
@@ -47,7 +47,7 @@ async function TodayCard() {
   const picks = variety(list, 3);
   const todayKey = londonDateKey(now);
   const pickTime = (e: PublicEvent) =>
-    isMultiDay(e) ? "Daily" : londonDateKey(e.startsAt) === todayKey ? formatTime(e.startsAt) : `${formatDayShort(e.startsAt, false)}, ${formatTime(e.startsAt)}`;
+    isMultiDay(e) ? formatRun(e) : londonDateKey(e.startsAt) === todayKey ? formatTime(e.startsAt) : `${formatDayShort(e.startsAt, false)}, ${formatTime(e.startsAt)}`;
   return (
     <div className="rounded-tile bg-surface p-4 text-ink shadow-[0_12px_40px_rgba(30,20,66,0.25)]">
       <div className="mb-3 flex items-baseline justify-between gap-2">
@@ -98,7 +98,7 @@ async function ThisWeek() {
 }
 
 const STEPS = [
-  { n: "1", title: "Pick who's coming", text: "Babies, toddlers, school-age kids or teens.", bg: "bg-[var(--tile-1)]" },
+  { n: "1", title: "Pick who's coming", text: "Under 5s, 5 to 11s, or 12 and over.", bg: "bg-[var(--tile-1)]" },
   { n: "2", title: "Pick a day", text: "Today, the weekend or any day in the next two weeks.", bg: "bg-[var(--tile-2)]" },
   { n: "3", title: "Off you go", text: "Free and paid ideas near you, with times, prices and directions.", bg: "bg-[var(--tile-4)]" },
 ];
@@ -114,7 +114,7 @@ export default function Home() {
           <div>
             <h1 className="max-w-[16ch] font-display text-[40px] font-bold leading-[1.02] sm:text-6xl">Plan a fun day out with the kids</h1>
             <p className="mt-4 max-w-[52ch] text-lg">
-              Story times, swimming, half-term trails and more across Stoke-on-Trent, all in one place. Pick who&apos;s coming and a day, and we&apos;ll show you
+              Rhyme times, stay and play, Lego clubs, family shows and more across Stoke-on-Trent, all in one place. Pick who&apos;s coming and a day, and we&apos;ll show you
               what&apos;s on. Always free for parents.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">

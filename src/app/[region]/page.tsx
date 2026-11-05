@@ -4,10 +4,11 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { EventsExplorer } from "@/components/EventsExplorer";
+import { GoodAnyDay } from "@/components/GoodAnyDay";
 import { tileColour } from "@/components/EventTile";
 import { PlanPicker, SearchRow } from "@/components/PlanPicker";
-import { listComingUp, listEvents } from "@/db/queries";
-import { dateWindow, parseFilters, type EventFilters } from "@/lib/filters";
+import { findNextDay, listComingUp, listEvents } from "@/db/queries";
+import { dateWindow, parseFilters, toSearch, type EventFilters } from "@/lib/filters";
 import { LIVE_REGIONS, getRegion, type Region } from "@/lib/site";
 import { addDays, formatTime, londonDateKey, londonMidnight } from "@/lib/time";
 
@@ -71,6 +72,13 @@ async function Results({ region, searchParams }: { region: Region; searchParams:
   ]);
   const areaName = (slug: string) => region.areas.find((a) => a.slug === slug)?.name ?? slug;
 
+  // An empty day points to the next day that has something on, with the same choices.
+  const next = !events.length && filters.when !== "week" && filters.when !== "all" ? await findNextDay(region.slug, filters, to, now) : null;
+  const nextDay = next && {
+    label: `${next.date === addDays(todayKey, 1) ? "Tomorrow" : fmt(next.date, { weekday: "long", day: "numeric", month: "long" })} has ${next.count} idea${next.count === 1 ? "" : "s"}`,
+    href: `/${region.slug}${toSearch({ ...filters, when: "date", date: next.date })}`,
+  };
+
   return (
     <>
       <Hero region={region}>
@@ -78,7 +86,7 @@ async function Results({ region, searchParams }: { region: Region; searchParams:
       </Hero>
       <div className="mx-auto max-w-6xl px-4 pb-16">
         <div className="py-5">
-          <SearchRow filters={filters} areas={region.areas} />
+          <SearchRow filters={filters} />
         </div>
         <EventsExplorer
           heading={headingFor(filters, todayKey)}
@@ -88,7 +96,12 @@ async function Results({ region, searchParams }: { region: Region; searchParams:
           center={region.center}
           zoom={region.zoom}
           todayKey={todayKey}
+          nextDay={nextDay}
+          searched={!!filters.q}
         />
+
+        {/* Quiet days (and weekends) also get places that are open without booking. */}
+        {!filters.q && (events.length < 6 || filters.when === "weekend") && <GoodAnyDay region={region.slug} areas={region.areas} prominent={!events.length} freeOnly={filters.free} />}
 
         {comingUp.length > 0 && (
           <section className="mt-10 rounded-tile bg-cobalt-soft p-4 sm:p-6">

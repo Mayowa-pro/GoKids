@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { AGE_OPTIONS, BUDGET_SLIDER_MAX, DAY_STRIP_DAYS, toSearch, type EventFilters } from "@/lib/filters";
-import type { Area } from "@/lib/site";
 import { addDays, londonMidnight } from "@/lib/time";
 
 const pill = (on: boolean) =>
@@ -76,8 +75,8 @@ export function PlanPicker({ filters, todayKey }: { filters: EventFilters; today
   );
 }
 
-/** Search, free-only and "near" controls under the hero. */
-export function SearchRow({ filters, areas }: { filters: EventFilters; areas: Area[] }) {
+/** Search and budget controls under the hero. ("Near" lives in the "Find events near you" box.) */
+export function SearchRow({ filters }: { filters: EventFilters }) {
   const router = useRouter();
   const pathname = usePathname();
   const [q, setQ] = useState(filters.q);
@@ -104,28 +103,12 @@ export function SearchRow({ filters, areas }: { filters: EventFilters; areas: Ar
           type="search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search swimming, Lego, story time…"
+          placeholder="Search rhyme time, Lego, stay and play…"
           className="w-full min-w-0 bg-transparent py-2.5 outline-none"
           autoComplete="off"
         />
       </label>
       <BudgetSlider filters={filters} onChange={(patch) => startTransition(() => router.replace(href(patch), { scroll: false }))} />
-      <label className="flex min-h-11 items-center gap-2 rounded-2xl bg-cobalt-soft pl-3.5 pr-1.5 text-[15px] font-semibold">
-        Near
-        <select
-          id="near"
-          value={filters.near ?? ""}
-          onChange={(e) => router.replace(href({ near: e.target.value || undefined }), { scroll: false })}
-          className="rounded-xl bg-surface px-2 py-1.5"
-        >
-          <option value="">Anywhere</option>
-          {areas.map((a) => (
-            <option key={a.slug} value={a.slug}>
-              {a.name}
-            </option>
-          ))}
-        </select>
-      </label>
     </div>
   );
 }

@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { dateWindow, parseFilters, toSearch } from "./filters";
+
+const morning = new Date("2026-10-20T09:00:00Z");
+import { dateWindow, minTopAge, parseFilters, searchTerms, toSearch } from "./filters";
 
 describe("parseFilters", () => {
   it("falls back to safe defaults for junk input", () => {
-    expect(parseFilters({ when: "never", age: "99", free: "yes" })).toEqual({ when: "today", age: "all", free: false, q: "", near: undefined });
+    expect(parseFilters({ when: "never", age: "99", free: "yes" }, morning)).toMatchObject({ when: "today", age: "all", free: false, q: "", near: undefined });
   });
 
   it("reads valid values and trims search", () => {
@@ -13,9 +15,28 @@ describe("parseFilters", () => {
   });
 
   it("round-trips through the URL and drops defaults", () => {
-    expect(toSearch({ when: "today", age: "all" })).toBe("");
+    expect(toSearch({ age: "all" })).toBe("");
+    expect(toSearch({ when: "today", age: "all" })).toBe("?when=today");
     const s = toSearch({ when: "today", free: true, q: "lego" });
     expect(parseFilters(Object.fromEntries(new URLSearchParams(s)))).toMatchObject({ when: "today", free: true, q: "lego" });
+  });
+});
+
+describe("evening", () => {
+  it("opens on tomorrow from 6pm, unless today was picked", () => {
+    const evening = new Date("2026-11-01T19:30:00Z");
+    expect(parseFilters({}, evening).when).toBe("tomorrow");
+    expect(parseFilters({ when: "today" }, evening).when).toBe("today");
+    expect(parseFilters({}, new Date("2026-11-01T10:00:00Z")).when).toBe("today");
+  });
+});
+
+describe("age groups", () => {
+  it("needs an event to reach past the bottom of the group", () => {
+    expect(minTopAge("all")).toBe(0);
+    expect(minTopAge("0-4")).toBe(0);
+    expect(minTopAge("5-11")).toBe(6);
+    expect(minTopAge("12+")).toBe(13);
   });
 });
 
@@ -60,13 +81,21 @@ describe("picking one day", () => {
 
 describe("budget", () => {
   it("reads a price limit and keeps it in the address", () => {
-    const f = parseFilters({ max: "10" });
+    const f = parseFilters({ max: "10" }, morning);
     expect(f.max).toBe(10);
-    expect(toSearch(f)).toBe("?max=10");
+    expect(toSearch(f)).toBe("?when=today&max=10");
     expect(parseFilters({ max: "7" }).max).toBe(7);
     expect(parseFilters({ max: "0" }).max).toBeUndefined();
     expect(parseFilters({ max: "50" }).max).toBeUndefined();
     expect(parseFilters({ max: "7.5" }).max).toBeUndefined();
     expect(parseFilters({ max: "abc" }).max).toBeUndefined();
+  });
+});
+
+describe("search", () => {
+  it("adds everyday alternatives", () => {
+    expect(searchTerms(" Story ")).toEqual(["story", "rhyme", "book", "read"]);
+    expect(searchTerms("lego")).toEqual(["lego"]);
+    expect(searchTerms("")).toEqual([]);
   });
 });

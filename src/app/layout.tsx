@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Fredoka, Nunito } from "next/font/google";
 import Link from "next/link";
 import { CookieBanner, CookieSettingsButton } from "@/components/CookieBanner";
-import { SITE } from "@/lib/site";
+import { LIVE_REGIONS, SITE } from "@/lib/site";
 import "./globals.css";
 
 const display = Fredoka({ variable: "--font-display", subsets: ["latin"], weight: ["500", "600", "700"] });
@@ -69,11 +69,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               </span>
             </Link>
             <nav className="ml-auto flex items-center gap-2 text-sm font-semibold">
-              <Link href="/for-organisers" className="hidden rounded-full px-3 py-2 hover:bg-cobalt-soft sm:inline-block">
-                For organisers
-              </Link>
-              <Link href="/submit" className="rounded-2xl bg-cobalt px-4 py-2.5 text-surface hover:opacity-90">
+              <Link href="/submit" className="hidden rounded-full px-3 py-2 hover:bg-cobalt-soft sm:inline-block">
                 List an event
+              </Link>
+              <Link href={`/${LIVE_REGIONS[0].slug}`} className="rounded-2xl bg-cobalt px-4 py-2.5 text-surface hover:opacity-90">
+                What&apos;s on
               </Link>
             </nav>
           </div>
@@ -88,7 +88,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Link href="/contact" className="hover:text-ink">Contact</Link>
             <Link href="/privacy" className="hover:text-ink">Privacy and cookies</Link>
             {SITE.gaId && <CookieSettingsButton className="hover:text-ink" />}
-            <Link href="/admin" className="hover:text-ink">Moderation</Link>
           </div>
         </footer>
         <CookieBanner gaId={SITE.gaId} />
