@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/privacy" },
 };
 
-const UPDATED = "26 October 2026";
+const UPDATED = "10 November 2026";
 
 export default function PrivacyPage() {
   return (
@@ -20,6 +20,10 @@ export default function PrivacyPage() {
         {SITE.name} ({SITE.url.replace(/^https?:\/\//, "")}) is a local listings website for family events. We are the
         &ldquo;controller&rdquo; of the personal information described here under UK data protection law (UK GDPR and the
         Data Protection Act 2018). You can reach us at <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+      </p>
+      <p>
+        We are registered with the Information Commissioner&apos;s Office (ICO). Our registration number is{" "}
+        <a href="https://ico.org.uk/ESDWebPages/Entry/ZC294522">ZC294522</a>.
       </p>
 
       <H2>Parents and visitors</H2>
