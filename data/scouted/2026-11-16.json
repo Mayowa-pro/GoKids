@@ -1,0 +1,37 @@
+[
+  {
+    "title": "Christmas in Hanley Park",
+    "description": "A free festive day around the bandstand in Hanley Park, run with the Friends of Hanley Park, with Christmas activities for families.",
+    "category": "Outdoors",
+    "area": "hanley",
+    "venue": "Hanley Park Bandstand",
+    "postcode": "ST1 4DX",
+    "date": "2026-11-28",
+    "start": "11:00",
+    "end": "15:00",
+    "isFree": true,
+    "minAge": 0,
+    "maxAge": 16,
+    "organiser": "Friends of Hanley Park",
+    "sourceUrl": "https://www.visitstoke.co.uk/whats-on/christmas-in-hanley-park-p2712001"
+  },
+  {
+    "title": "Meet Father Christmas at Trentham",
+    "description": "Sold out. Children visit Father Christmas in his grotto at Trentham's North Pole, with a photo on the sleigh, a soft toy and reindeer food to take home.",
+    "category": "Play",
+    "area": "trentham",
+    "venue": "Trentham Shopping Village",
+    "postcode": "ST4 8JG",
+    "date": "2026-12-05",
+    "endDate": "2026-12-24",
+    "start": "09:00",
+    "end": "18:00",
+    "isFree": false,
+    "priceText": "Sold out",
+    "adultPrice": "Free with a paying child",
+    "minAge": 0,
+    "maxAge": 16,
+    "organiser": "Trentham Estate",
+    "sourceUrl": "https://trentham.co.uk/events/meet-father-christmas/"
+  }
+]
